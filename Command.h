@@ -1,56 +1,67 @@
-//
-// Created by shlomo on 16/12/18.
-//
-
 #ifndef PROJECT_COMMAND_H
 #define PROJECT_COMMAND_H
 
 #include <string>
-#include <list>
+#include <vector>
+#include <map>
 
 using namespace std;
 
 class Command {
+protected:
+    vector<Command> commands;
+    map<string, double> symbolTable;
+    virtual bool validate(vector<string> s) = 0;
+
+public:
+    virtual int execute(vector<string> s) = 0;
+};
+
+class OpenServerCommand : public Command {
+protected:
+    bool validate(vector<string> s) override;
+
+public:
+    int execute(vector<string> s) override;
+};
+
+class ConnectCommand : public Command {
+public:
+    int execute(vector<string> s) override;
+};
+
+class DefineVarCommand : public Command {
 private:
-    list<Command> commands;
+protected:
+    bool validate(vector<string> s) override;
+
+private:
+    void addVar(string s, double val);
+
+    void setVar(string s, double val);
 
 public:
-    virtual int execute(string s);
+    int execute(vector<string> s) override;
 };
 
-class OpenServerCommand : public Command{
+class FuncCommand : public Command {
 public:
-    int execute(string s) override;
+    int execute(vector<string> s) override;
 };
 
-class ConnectCommand : public Command{
+class ConditionParser : public Command {
 public:
-    int execute(string s) override;
+    int execute(vector<string> s) override;
 };
 
-class DefineVarCommand : public Command{
+class LoopCommand : public ConditionParser {
 public:
-    int execute(string s) override;
+    int execute(vector<string> s) override;
 };
 
-class FuncCommand : public Command{
+class IfCommand : public ConditionParser {
 public:
-    int execute(string s) override;
-};
-
-class ConditionParser: public Command{
-public:
-    virtual int execute(string s) override;
-};
-
-class LoopCommand: public ConditionParser{
-public:
-    int execute(string s) override;
-};
-
-class IfCommand: public ConditionParser{
-public:
-    int execute(string s) override;
+    int execute(vector<string> s) override;
 };
 
 #endif //PROJECT_COMMAND_H

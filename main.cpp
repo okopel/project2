@@ -2,14 +2,18 @@
 #include "ReadData.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
     ReadData x;
     x.lexer("data");
-    x.parser();
 
 
     for (auto &s : x.getVector()) {
-        cout << s;
+        for (auto m:s) {
+            cout << m << " ";
+        }
+        cout << endl;
     }
+    //do the script
+    //x.parser();
+
     return 0;
 }

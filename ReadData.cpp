@@ -6,64 +6,72 @@
 #include "Command.h"
 #include <iterator>
 #include <map>
+#include <vector>
 
 
-ReadData::ReadData(const vector<string> &vec) : vec(vec) {}
 
 /**
  * Create map command
  */
 ReadData::ReadData() {
-    commandMap.insert(pair<string, Command*>("connect", new ConnectCommand()));
-    commandMap.insert(pair<string, Command*>("openServer", new ConnectCommand()));
-    commandMap.insert(pair<string, Command*>("var", new DefineVarCommand()));
+    commandMap.insert(pair<string, Command *>("connect", new ConnectCommand()));
+    commandMap.insert(pair<string, Command *>("openDataServer", new ConnectCommand()));
+    commandMap.insert(pair<string, Command *>("var", new DefineVarCommand()));
+
 }
 
-const vector <string> &ReadData::getVector() const {
-    return vec;
-}
 
 /**
  * make array of words
  * @param file of instructions
  */
-void ReadData::lexer(string file){
+void ReadData::lexer(string file) {
     string s = "1";
     ifstream ifs;
-    string buffer;
     ifs.open(file);
     if (!ifs.is_open()) { return; }
 
     // read lines from data file
-    while (!s.empty()){
+    while (!s.empty()) {
         s = "";
         getline(ifs, s);
-        buffer += s;
-        buffer+= " ";
+        //parse line to words
+        std::istringstream iss(s);
+        std::vector<std::string> results(std::istream_iterator<std::string>{iss},
+                                         std::istream_iterator<std::string>());
+        //each line in a node
+        this->vec.push_back(results);
     }
-    // put each word in one node
-    std::istringstream iss(buffer);
-    std::vector<std::string> results(std::istream_iterator<std::string>{iss},
-                                     std::istream_iterator<std::string>());
-    this->vec = results;
+
+//    this->vec = results;
     ifs.close();
 }
 
-void ReadData::parser(){
-    int index = 0;
-
-    Command* c = commandMap.at(this->vec.at(index));
-    // execute all commands
-    while(c != nullptr) {
-        index += (*c).execute(this->vec.at(index));
+/**
+ *
+ */
+void ReadData::parser() {
+    for (vector<string> tmp:this->vec) {
+        Command *c = this->commandMap[tmp[0]];
+        tmp.erase(tmp.begin());//delete the funcName
+        c->execute(tmp);//send parameters
     }
+//    Command* c = this->commandMap.at(this->vec.at(index));
+    // execute all commands
+//    while (c != nullptr) {
+//        index += (*c).execute(this->vec.at(index));
+//    }
 }
 
 /**
  * DTOR
  */
-ReadData::~ReadData(){
-    for (auto &c : this->commandMap){
+ReadData::~ReadData() {
+    for (auto &c : this->commandMap) {
         delete c.second;
     }
+}
+
+const std::vector<vector<string>> &ReadData::getVector() const {
+    return this->vec;
 }

@@ -6,6 +6,7 @@
 #define PROJECT_READDATA_H
 
 using namespace std;
+
 #include <vector>
 #include <iostream>
 #include <sstream>
@@ -16,16 +17,22 @@ using namespace std;
 class ReadData {
 
 private:
-    vector<string> vec;
-    map<string, Command*> commandMap;
+    vector<vector<string>> vec;
+    map<string, Command *> commandMap;
+
 
 public:
     ReadData(const std::vector<string> &vec);
+
     ReadData();
+
     ~ReadData();
+
     void lexer(string file);
+
     void parser();
-    const std::vector<string> &getVector() const;
+
+    const std::vector<vector<string>> &getVector() const;
 };
 
 

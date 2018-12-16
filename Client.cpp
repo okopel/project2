@@ -12,7 +12,6 @@
 
 #include <string.h>
 
-int Client() {}
 
 int static openClient(int argc, char *argv[]) {
     int sockfd, portno, n;

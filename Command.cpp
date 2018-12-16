@@ -1,6 +1,3 @@
-//
-// Created by shlomo on 16/12/18.
-//
 
 #include "Command.h"
 #include "Client.cpp"
@@ -11,39 +8,60 @@
     c.execute()
 }*/
 
-/**
- *
- * @param s
- * @return 3, move index 3 steps forward
- */
-int OpenServerCommand::execute(string s) {
-    // open server
-    return 3;
+
+int OpenServerCommand::execute(vector<string> s) {
+    if (s.size() != 2) {
+        throw "Error in openServerCommand";
+    }
+
 }
 
-int ConnectCommand::execute(string s) {
-    // open client
-
-    
-    return 3;
+bool OpenServerCommand::validate(vector<string> s) {
+    return false;//todo
 }
 
-int DefineVarCommand::execute(string s) {
-    return Command::execute(s);
+int ConnectCommand::execute(vector<string> s) {
+    0;
 }
 
-int LoopCommand::execute(string s) {
-    return ConditionParser::execute(s);
+int DefineVarCommand::execute(vector<string> s) {
+    if (!this->validate(s)) {
+        return 0;
+    }
+    string par = s[0];
+    double val;//todo get num from server
+    this->addVar(par, val);
+
 }
 
-int ConditionParser::execute(string s) {
-    return Command::execute(s);
+void DefineVarCommand::addVar(string s, double val) {
+    this->symbolTable.insert(pair<string, double>(s, val));
 }
 
-int IfCommand::execute(string s) {
-    return ConditionParser::execute(s);
+void DefineVarCommand::setVar(string s, double val) {
+    this->symbolTable[s] = val;
 }
 
-int FuncCommand::execute(string s) {
-    return Command::execute(s);
+bool DefineVarCommand::validate(vector<string> s) {
+    if (s.size() != 2) {
+        return false;
+    }
+    //todo validate that the args is numbers
+    return true;
+}
+
+int FuncCommand::execute(vector<string> s) {
+    0;
+}
+
+int ConditionParser::execute(vector<string> s) {
+    0;
+}
+
+int LoopCommand::execute(vector<string> s) {
+    0;
+}
+
+int IfCommand::execute(vector<string> s) {
+    0;
 }
