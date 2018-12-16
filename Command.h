@@ -9,7 +9,7 @@ using namespace std;
 
 class Command {
 protected:
-    vector<Command> commands;
+    //Command *command;
     map<string, double> symbolTable;
     virtual bool validate(vector<string> s) = 0;
 
@@ -55,6 +55,8 @@ public:
 };
 
 class LoopCommand : public ConditionParser {
+private:
+    Command* command;
 public:
     int execute(vector<string> s) override;
 };

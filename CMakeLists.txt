@@ -3,4 +3,4 @@ project(project)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(project main.cpp ReadData.cpp ReadData.h Command.cpp Command.h Client.cpp)
+add_executable(project main.cpp ReadData.cpp ReadData.h Command.cpp Command.h Client.cpp Expression.h ShuntingYard.cpp ShuntingYard.h)
