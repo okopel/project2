@@ -24,6 +24,10 @@ int ConnectCommand::execute(vector<string> s) {
     0;
 }
 
+bool ConnectCommand::validate(vector<string> s) {
+    return false;
+}
+
 int DefineVarCommand::execute(vector<string> s) {
     if (!this->validate(s)) {
         return 0;
@@ -58,8 +62,16 @@ int ConditionParser::execute(vector<string> s) {
     0;
 }
 
+void ConditionParser::addCommand(Command *c) {
+    this->conditionCommandList.push_back(c);
+}
+
 int LoopCommand::execute(vector<string> s) {
-    0;
+//   while(conditon){
+//       for(auto tmp:this->conditionCommandList){
+//           tmp->execute()
+//       }
+//   }
 }
 
 int IfCommand::execute(vector<string> s) {

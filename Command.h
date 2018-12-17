@@ -26,6 +26,9 @@ public:
 };
 
 class ConnectCommand : public Command {
+protected:
+    bool validate(vector<string> s) override;
+
 public:
     int execute(vector<string> s) override;
 };
@@ -50,13 +53,14 @@ public:
 };
 
 class ConditionParser : public Command {
+protected:
+    vector<Command*> conditionCommandList;
 public:
-    int execute(vector<string> s) override;
+    void addCommand(Command* c);
+    virtual int execute(vector<string> s) = 0;
 };
 
 class LoopCommand : public ConditionParser {
-private:
-    Command* command;
 public:
     int execute(vector<string> s) override;
 };

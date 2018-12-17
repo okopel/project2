@@ -9,13 +9,12 @@
 #include <vector>
 
 
-
 /**
  * Create map command
  */
 ReadData::ReadData() {
     commandMap.insert(pair<string, Command *>("connect", new ConnectCommand()));
-    commandMap.insert(pair<string, Command *>("openDataServer", new ConnectCommand()));
+    commandMap.insert(pair<string, Command *>("openDataServer", new OpenServerCommand()));
     commandMap.insert(pair<string, Command *>("var", new DefineVarCommand()));
 
 }
