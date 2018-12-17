@@ -1,6 +1,4 @@
-//
-// Created by okoprl on 12/16/18.
-//
+
 
 #include <string>
 #include "ShuntingYard.h"
@@ -34,7 +32,7 @@ ShuntingYard::ShuntingYard(string s) {
                         this->stack.pop();
                     }
                 }
-                this->stack.push(""+c);
+                this->stack.push("" + c);
             } else if (c == '(') { //start of expression case
                 this->stack.push(to_string(c));
             } else if (c == ')') { //end of expression case
@@ -57,4 +55,9 @@ ShuntingYard::ShuntingYard(string s) {
         this->queue.push(this->stack.top());
         this->stack.pop();
     }
+}
+
+double ShuntingYard::calculate() {
+    //todo calculating and vars are in:
+    this->c->getFromSymbolTable("fdkgdfmlgdfg");
 }

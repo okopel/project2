@@ -1,19 +1,21 @@
 
 #include "Command.h"
 #include "Client.cpp"
-
-/*int IfCommand::execute(string s) {
-    if condition == true
-    for each Command c in commands
-    c.execute()
-}*/
-
+#include "ServerSock.cpp"
+#include "Expression.h"
+#include "ComExp.h"
+#include "ShuntingYard.h"
 
 int OpenServerCommand::execute(vector<string> s) {
-    if (s.size() != 2) {
-        throw "Error in openServerCommand";
-    }
+    try {
 
+        int port = stoi(s[0]);
+        int hz = stoi(s[1]);
+
+        ServerSock::openServer(port, hz);
+    } catch (...) {
+        throw "Error in openServer";
+    }
 }
 
 bool OpenServerCommand::validate(vector<string> s) {
@@ -21,7 +23,15 @@ bool OpenServerCommand::validate(vector<string> s) {
 }
 
 int ConnectCommand::execute(vector<string> s) {
-    0;
+    try {
+
+        string ip = s[0];
+        int port = stoi(s[1]);
+
+        Client::connectClient(ip, port);
+    } catch (...) {
+        throw "Error in connectToClient";
+    }
 }
 
 bool ConnectCommand::validate(vector<string> s) {
@@ -30,9 +40,11 @@ bool ConnectCommand::validate(vector<string> s) {
 
 int DefineVarCommand::execute(vector<string> s) {
     if (!this->validate(s)) {
-        return 0;
+        throw "Error on VarCommand";
     }
     string par = s[0];
+    string add = s[3];
+
     double val;//todo get num from server
     this->addVar(par, val);
 
@@ -76,4 +88,24 @@ int LoopCommand::execute(vector<string> s) {
 
 int IfCommand::execute(vector<string> s) {
     0;
+}
+
+int assingmentCommand::execute(vector<string> s) {
+    string varName = s[0];
+    Expression *e = new ShuntingYard(s[2]);
+    double val = e->calculate();
+
+//    if (this->symbolTable.count(s[2]) > 0) {
+//        val = this->symbolTable[s[2]];
+//    }else{
+//        val=stoi
+//    }
+
+}
+
+double Command::getFromSymbolTable(string s) {
+    if (this->symbolTable.count(s) == 0) {
+        throw "Not in Map";
+    }
+    return this->symbolTable[s];
 }

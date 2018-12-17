@@ -1,6 +1,9 @@
-//
-// Created by shlomo on 16/12/18.
-//
+/*****************************
+ * Project of:
+ * Ori Kopel 205533151
+ * Shlomo Rabinovich 00000000
+ * December 18
+ ******************************/
 
 #ifndef PROJECT_READDATA_H
 #define PROJECT_READDATA_H

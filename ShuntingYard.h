@@ -5,10 +5,10 @@
 #include <stack>
 #include <string>
 #include "Expression.h"
-
+#include "ComExp.h"
 using namespace std;
 
-class ShuntingYard {
+class ShuntingYard: public ComExp {
 private:
     std::queue<string> queue;
     std::stack<string> stack;
@@ -22,6 +22,8 @@ public:
      * note that the function get numbers, vars already convercted in the parser
      */
     ShuntingYard(string s);
+
+    double calculate() override;
 };
 
 

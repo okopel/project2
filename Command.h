@@ -11,9 +11,12 @@ class Command {
 protected:
     //Command *command;
     map<string, double> symbolTable;
+
     virtual bool validate(vector<string> s) = 0;
 
 public:
+    double getFromSymbolTable(string s);
+
     virtual int execute(vector<string> s) = 0;
 };
 
@@ -54,9 +57,10 @@ public:
 
 class ConditionParser : public Command {
 protected:
-    vector<Command*> conditionCommandList;
+    vector<Command *> conditionCommandList;
 public:
-    void addCommand(Command* c);
+    void addCommand(Command *c);
+
     virtual int execute(vector<string> s) = 0;
 };
 
@@ -66,6 +70,13 @@ public:
 };
 
 class IfCommand : public ConditionParser {
+public:
+    int execute(vector<string> s) override;
+};
+
+class assingmentCommand : public Command {
+private:
+
 public:
     int execute(vector<string> s) override;
 };
