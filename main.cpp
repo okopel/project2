@@ -1,10 +1,11 @@
 #include <iostream>
 #include "ReadData.h"
 #include "ShuntingYard.h"
+
 int main() {
 
-    ShuntingYard s= ShuntingYard("25+6");
-
+    ShuntingYard s = ShuntingYard("25+6", nullptr);
+    cout << s.calculate() << endl;
     ReadData x;
     x.lexer("data");
 

@@ -92,7 +92,7 @@ int IfCommand::execute(vector<string> s) {
 
 int assingmentCommand::execute(vector<string> s) {
     string varName = s[0];
-    Expression *e = new ShuntingYard(s[2]);
+    Expression *e = new ShuntingYard(s[2],this);
     double val = e->calculate();
 
 //    if (this->symbolTable.count(s[2]) > 0) {

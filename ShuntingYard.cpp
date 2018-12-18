@@ -7,7 +7,7 @@ bool ShuntingYard::isOperator(char c) {
     return (c == '+' || c == '*' || c == '/' || c == '-');
 }
 
-ShuntingYard::ShuntingYard(string s) {
+ShuntingYard::ShuntingYard(string s, Command *com) : ComExp(com) {
     string buffer;
     for (char c:s) {
         //disregard from spaces
@@ -32,9 +32,9 @@ ShuntingYard::ShuntingYard(string s) {
                         this->stack.pop();
                     }
                 }
-                this->stack.push("" + c);
+                this->stack.push(this->charToString(c));
             } else if (c == '(') { //start of expression case
-                this->stack.push(to_string(c));
+                this->stack.push(this->charToString(c));
             } else if (c == ')') { //end of expression case
                 string p = this->stack.top();
                 this->stack.pop();
@@ -58,6 +58,52 @@ ShuntingYard::ShuntingYard(string s) {
 }
 
 double ShuntingYard::calculate() {
-    //todo calculating and vars are in:
-    this->c->getFromSymbolTable("fdkgdfmlgdfg");
+    double result;
+    double tmpNum;
+    Expression *e;
+    vector<string> vecOfQueue;
+    while (!queue.empty()) {
+        string s = queue.front();
+        if ((!isOperator(s[0])) && (!isNumber(s))) { //not num and not operator->var
+            s = to_string(this->c->getFromSymbolTable(s));
+        }
+        vecOfQueue.push_back(s);
+        queue.pop();
+    }
+
+    return this->calExp(vecOfQueue);
+
+}
+
+bool ShuntingYard::isNumber(string s) {
+    for (char c:s) {
+        if (!isdigit(c)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+double ShuntingYard::calExp(vector<string> v) {
+
+
+}
+
+string ShuntingYard::charToString(char c) {
+    switch (c) {
+        case '+':
+            return "+";
+        case '-':
+            return "-";
+        case '*':
+            return "*";
+        case '/':
+            return "/";
+        case '(':
+            return "(";
+        case ')':
+            return ")";
+        default:
+            return "";
+    }
 }

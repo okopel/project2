@@ -6,14 +6,21 @@
 #include <string>
 #include "Expression.h"
 #include "ComExp.h"
+
 using namespace std;
 
-class ShuntingYard: public ComExp {
+class ShuntingYard : public ComExp {
 private:
     std::queue<string> queue;
     std::stack<string> stack;
 
+    bool isNumber(string s);
+
     bool isOperator(char c);
+
+    double calExp(vector<string> v);
+
+    string charToString(char c);
 
 public:
     /**
@@ -21,7 +28,7 @@ public:
      * @param s is the input (2+3-3*5)
      * note that the function get numbers, vars already convercted in the parser
      */
-    ShuntingYard(string s);
+    ShuntingYard(string s, Command *com);
 
     double calculate() override;
 };
