@@ -109,8 +109,6 @@ double ShuntingYard::calculate() {
         queue.pop();
     }
     Expression *result = nums.top();
-  //  cout << result->calculate();
-
 
     return result->calculate();
 

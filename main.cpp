@@ -20,6 +20,7 @@ int main() {
     cout << ShuntingYard("1*2*3*4*5", nullptr).calculate() << "=120" << endl;
     cout << ShuntingYard("1+2*3+4/5+5*5", nullptr).calculate() << "=32.8" << endl;
     cout << ShuntingYard("25*2/2/2/2*2.1531*2*2.2654+2+2+2*2-2+2/8+4+5.2*4.5", nullptr).calculate() << "=94.6204" << endl;
+    cout << ShuntingYard("25*2/2/2/2", nullptr).calculate() << "=6.25" << endl;
 
 //    ShuntingYard e("5 - + - 3", nullptr);
 //    cout << e.calculate() << endl;
