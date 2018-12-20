@@ -8,7 +8,7 @@ int main() {
     DefineVarCommand * com= new DefineVarCommand();
     com->addVar("x",30.5);
 
-    ShuntingYard s("55-5+3", com);
+    ShuntingYard s("55-5-3", com);
     s.calculate();
     //  cout<<s.calculate()<<endl;
     //ReadData x;

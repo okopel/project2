@@ -19,7 +19,7 @@ private:
     bool isOperator(char c);
 
     bool isLetter(char c);
-
+    bool priority(char f, char l);
     Expression *calExp(char op, Expression *e1, Expression *e2);
 
     string charToString(char c);

@@ -10,17 +10,6 @@ bool ShuntingYard::isOperator(char c) {
     return (c == '+' || c == '*' || c == '/' || c == '-');
 }
 
-bool ShuntingYard::priority(char f, char l) {
-    int priF = 0, priL = 0;
-    if (f == '*' || f == '/') {
-        priF = 5;
-    }
-    if (l == '*' || l == '/') {
-        priL = 5;
-    }
-    return priF > priL;
-}
-
 ShuntingYard::ShuntingYard(string s, Command *com) : ComExp(com) {
     string buffer;
     string varBuf;
@@ -50,17 +39,13 @@ ShuntingYard::ShuntingYard(string s, Command *com) : ComExp(com) {
                 string top;
                 if (!this->stack.empty()) {
                     top = this->stack.top();
-                    bool pri = this->priority(top[0], c);
-                    if ((!this->stack.empty()) && !pri) {
-                        while (!this->stack.empty()) {
-                            this->queue.push(top);
-                            this->stack.pop();
-                        }
+                    while ((!this->stack.empty()) && (top == "*" || top == "/") && (top != "(") &&
+                           (c != '*') && (c != '/')) {
+                        this->queue.push(top);
+                        this->stack.pop();
                     }
                     this->stack.push(this->charToString(c));
-                } else {
-                    this->stack.push(this->charToString(c));
-                }
+                } else { this->stack.push(this->charToString(c)); }
             } else if (c == '(') { //start of expression case
                 this->stack.push(this->charToString(c));
             } else if (c == ')') { //end of expression case
@@ -109,6 +94,7 @@ double ShuntingYard::calculate() {
     }
     Expression *result = nums.top();
     cout << result->calculate() << endl;
+
 
 
     return 0;
