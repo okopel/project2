@@ -22,6 +22,8 @@ public:
 
 class OpenServerCommand : public Command {
 protected:
+    map<string, double>* serverMap;
+
     bool validate(vector<string> s) override;
 
 public:
@@ -43,7 +45,9 @@ protected:
 //private:
 public:
     void addVar(string s, double val);
+
     void setVar(string s, double val);
+
     int execute(vector<string> s) override;
 };
 

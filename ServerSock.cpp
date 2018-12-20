@@ -88,6 +88,7 @@ public:
                 }
             }
 
+
             map["/instrumentation/airspeed-indicator/indicated-speed-kt"] = stod(seglist[0]);
             map["/instrumentation/altimeter/indicated-altitude-ft"] = stod(seglist[1]);
             map["/instrumentation/altimeter/pressure-alt-ft"] = stod(seglist[2]);

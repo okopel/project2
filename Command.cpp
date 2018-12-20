@@ -13,7 +13,9 @@ int OpenServerCommand::execute(vector<string> s) {
 
         int port = stoi(s[0]);
         int hz = stoi(s[1]);
-        std::thread t(ServerSock::openServer,port,hz);
+        this->serverMap=new map<string,double >;
+        map<string,double >& sermap=*this->serverMap;
+        std::thread t(ServerSock::openServer,port,hz,sermap);
         t.join();
 //        ServerSock::openServer(port, hz);
     } catch (...) {
