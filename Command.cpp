@@ -5,17 +5,21 @@
 #include "Expression.h"
 #include "ComExp.h"
 #include "ShuntingYard.h"
+#include <thread>
+//using namespace std;
 
 int OpenServerCommand::execute(vector<string> s) {
     try {
 
         int port = stoi(s[0]);
         int hz = stoi(s[1]);
-
-        ServerSock::openServer(port, hz);
+        std::thread t(ServerSock::openServer,port,hz);
+        t.join();
+//        ServerSock::openServer(port, hz);
     } catch (...) {
         throw "Error in openServer";
     }
+
 }
 
 bool OpenServerCommand::validate(vector<string> s) {

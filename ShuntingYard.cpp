@@ -34,7 +34,7 @@ ShuntingYard::ShuntingYard(string s, Command *com) : ComExp(com) {
             buffer += c;
             continue;
         }
-        if (isLetter(c)) {
+        if (isLetter(c)||(c=='_')) {
             varBuf += c;
             continue;
         } else {
@@ -51,7 +51,7 @@ ShuntingYard::ShuntingYard(string s, Command *com) : ComExp(com) {
                 if (!this->stack.empty()) {
                     top = this->stack.top();
                     bool pri = this->priority(top[0], c);
-                    while ((!this->stack.empty()) && pri) {
+                    while ((!this->stack.empty()) && pri && top[0]!='(') {
                         pri = this->priority(top[0], c);
                         this->queue.push(this->stack.top());
                         this->stack.pop();
@@ -72,7 +72,7 @@ ShuntingYard::ShuntingYard(string s, Command *com) : ComExp(com) {
                     p = this->stack.top();
                     this->stack.pop();
                 }
-                this->queue.push(p);//add the ')'
+                //this->queue.push(p);//add the ')'
             }
 
         }

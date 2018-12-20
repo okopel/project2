@@ -5,6 +5,27 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <netdb.h>
+#include <unistd.h>
+#include <netinet/in.h>
+
+#include <string.h>
+
+#include <sys/socket.h>
+#include <iostream>
+
+#include <iostream>
+#include <cstdlib>
+#include <pthread.h>
+typedef void *(*THREADFUNCPTR)(void *);
+
+struct thread_data {
+    int port;
+    int rate;
+};
 
 class ServerSock {
 public:
