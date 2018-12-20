@@ -55,11 +55,6 @@ void ReadData::parser() {
         tmp.erase(tmp.begin());//delete the funcName
         c->execute(tmp);//send parameters
     }
-//    Command* c = this->commandMap.at(this->vec.at(index));
-    // execute all commands
-//    while (c != nullptr) {
-//        index += (*c).execute(this->vec.at(index));
-//    }
 }
 
 /**

@@ -44,8 +44,6 @@ protected:
 public:
     void addVar(string s, double val);
     void setVar(string s, double val);
-
-public:
     int execute(vector<string> s) override;
 };
 

@@ -50,6 +50,8 @@ int DefineVarCommand::execute(vector<string> s) {
     string add = s[3];
 
     double val;//todo get num from server
+
+
     this->addVar(par, val);
 
 }
