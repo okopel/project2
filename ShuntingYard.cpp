@@ -18,7 +18,7 @@ bool ShuntingYard::priority(char f, char l) {
     if (l == '*' || l == '/') {
         priL = 5;
     }
-    return priF > priL;
+    return priF >= priL;
 }
 
 ShuntingYard::ShuntingYard(string s, Command *com) : ComExp(com) {
@@ -51,13 +51,14 @@ ShuntingYard::ShuntingYard(string s, Command *com) : ComExp(com) {
                 if (!this->stack.empty()) {
                     top = this->stack.top();
                     bool pri = this->priority(top[0], c);
-                    if ((!this->stack.empty()) && !pri) {
-                        while (!this->stack.empty()) {
-                            this->queue.push(top);
-                            this->stack.pop();
-                        }
+                    while ((!this->stack.empty()) && pri) {
+                        pri = this->priority(top[0], c);
+                        this->queue.push(this->stack.top());
+                        this->stack.pop();
+
                     }
-                    this->stack.push(this->charToString(c));
+                   this->stack.push(this->charToString(c));
+
                 } else {
                     this->stack.push(this->charToString(c));
                 }
@@ -108,10 +109,10 @@ double ShuntingYard::calculate() {
         queue.pop();
     }
     Expression *result = nums.top();
-    cout << result->calculate() << endl;
+  //  cout << result->calculate();
 
 
-    return 0;
+    return result->calculate();
 
 }
 
