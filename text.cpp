@@ -1,21 +1,16 @@
 
-
-#include "text.h"
-
-
-
 #include <iostream>
 
 #include <string>
-#include "text.h"
+#include "ShuntingYard.h"
 
 using namespace std;
 
-bool text::isOperator(char c) {
+bool ShuntingYard::isOperator(char c) {
     return (c == '+' || c == '*' || c == '/' || c == '-');
 }
 
-text::text(string s, Command *com) : ComExp(com) {
+ShuntingYard::ShuntingYard(string s, Command *com) : ComExp(com) {
     string buffer;
     string varBuf;
     for (char c:s) {
@@ -44,19 +39,13 @@ text::text(string s, Command *com) : ComExp(com) {
                 string top;
                 if (!this->stack.empty()) {
                     top = this->stack.top();
-                    while ((!this->stack.empty()) && (top == "*" || top == "/") && (top != "(")
-                                                                && (c != '*') && (c != '/')) {
-                        //this->queue.push(top);
-                        //this->stack.pop();
-                        string s1=queue.front();
-                        queue.pop();
-                        string s2=queue.front();
-                        queue.pop();
-                        this->queue.push(to_string(calc(top,s1,s2)));
+                    while ((!this->stack.empty()) && (top == "*" || top == "/") && (top != "(") &&
+                           (c != '*') && (c != '/')) {
+                        this->queue.push(top);
+                        this->stack.pop();
                     }
-
-                }
-                //this->stack.push(this->charToString(c));
+                    this->stack.push(this->charToString(c));
+                } else { this->stack.push(this->charToString(c)); }
             } else if (c == '(') { //start of expression case
                 this->stack.push(this->charToString(c));
             } else if (c == ')') { //end of expression case
@@ -69,37 +58,66 @@ text::text(string s, Command *com) : ComExp(com) {
                 }
                 this->queue.push(p);//add the ')'
             }
+
         }
     }//end for of string s
     if (!buffer.empty()) {
         this->stack.push(buffer);
+    }
+    if (!varBuf.empty()) {
+        this->stack.push(to_string(this->c->getFromSymbolTable(varBuf)));
     }
     //move to the queue
     while (!this->stack.empty()) {
         this->queue.push(this->stack.top());
         this->stack.pop();
     }
-
-    cout<<queue.front()<<endl;
-    queue.pop();
-    cout<<queue.front()<<endl;
-    queue.pop();
-    cout<<queue.front()<<endl;
-
-
 }
 
-double text::calculate() {
-    vector<string> vec;
-    while (!this->queue.empty()) {
-        vec.push_back(this->queue.front());
-        this->queue.pop();
-    }
-    //now the queue is vector
-    if (vec.size() == 1) {
-        return stoi(vec[0]);
-    }
+double ShuntingYard::calculate() {
+    /* vector<string> vec;
+     while (!this->queue.empty()) {
+         vec.push_back(this->queue.front());
+         this->queue.pop();
+     }
+     //now the queue is vector
+     if (vec.size() == 1) {
+         return stoi(vec[0]);
+     }*/
 
+
+    ::stack<Expression *> nums;
+
+    while (!this->queue.empty()) {
+        if (isNumber(queue.front())) {
+            nums.push(new Number(queue.front()));
+        } else if (isOperator(queue.front()[0])) {
+            Expression *e1 = nums.top();
+            nums.pop();
+            Expression *e2 = nums.top();
+            nums.pop();
+            nums.push(this->calExp(queue.front()[0], e2, e1));
+        }
+        queue.pop();
+    }
+    Expression *result = nums.top();
+    cout << result->calculate() << endl;
+
+    /*
+    for (int i = 0; i < vec.size(); i++) {
+        if (isNumber(vec[i])) {
+            nums.push(new Number(vec[i]));
+        } else if (isOperator(vec[i][0])) {
+            Expression *e1 = nums.top();
+            nums.pop();
+            Expression *e2 = nums.top();
+            nums.pop();
+            nums.push(this->calExp(vec[i][0], e1, e2));
+        }
+    }*/
+
+    return 0;
+    /*
     int index = 0;
     Expression *exp1 = new Number(vec[0]);
     Expression *exp2;
@@ -120,33 +138,36 @@ double text::calculate() {
             continue;
         }
     }
-
+*/
 
 }
 
-bool text::isNumber(string s) {
+bool ShuntingYard::isNumber(string s) {
     for (char c:s) {
-        if (!isdigit(c)) {
+        if (!isdigit(c) && (c != '.')) {
             return false;
         }
     }
     return true;
 }
 
-double text::calExp(vector<string> v) {
-    int index = v.size() - 1;
-    double result;
-    char c = v[index][0];
+Expression *ShuntingYard::calExp(char op, Expression *e1, Expression *e2) {
+    switch (op) {
+        case '+':
+            return new Plus(e1, e2);
+        case '-':
+            return new Minus(e1, e2);
+        case '*':
+            return new Mul(e1, e2);
+        case '/':
+            return new Div(e1, e2);
 
-//        switch (c){
-//            case '+':
-//                result=new Plus()
-    return 0;
+    }
 
 
 }
 
-string text::charToString(char c) {
+string ShuntingYard::charToString(char c) {
     switch (c) {
         case '+':
             return "+";
@@ -165,20 +186,7 @@ string text::charToString(char c) {
     }
 }
 
-bool text::isLetter(char c) {
+bool ShuntingYard::isLetter(char c) {
     return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
 
-}
-
-double text::calc(string op, string s1, string s2) {
-    switch (op[0]){
-        case '+':
-            return stoi(s1)+stoi(s2);
-        case '-':
-            return stoi(s1)-stoi(s2);
-        case '*':
-            return stoi(s1)*stoi(s2);
-        case '/':
-            return stoi(s1)/stoi(s2);
-    }
 }

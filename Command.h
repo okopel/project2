@@ -37,13 +37,12 @@ public:
 };
 
 class DefineVarCommand : public Command {
-private:
 protected:
     bool validate(vector<string> s) override;
 
-private:
+//private:
+public:
     void addVar(string s, double val);
-
     void setVar(string s, double val);
 
 public:

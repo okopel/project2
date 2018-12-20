@@ -2,6 +2,7 @@
 #define PROJECT_EXPRESSION_H
 
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -21,9 +22,9 @@ public:
     Number(double value) : value(value) {}
 
     Number(string values) {
-        this->value = stoi(values);
-    }
 
+        this->value = stod(values);
+    }
     double calculate() override;
 
 };

@@ -40,7 +40,7 @@ ShuntingYard::ShuntingYard(string s, Command *com) : ComExp(com) {
                 if (!this->stack.empty()) {
                     top = this->stack.top();
                     while ((!this->stack.empty()) && (top == "*" || top == "/") && (top != "(") &&
-                            (c != '*') && (c != '/')) {
+                           (c != '*') && (c != '/')) {
                         this->queue.push(top);
                         this->stack.pop();
                     }
@@ -58,18 +58,20 @@ ShuntingYard::ShuntingYard(string s, Command *com) : ComExp(com) {
                 }
                 this->queue.push(p);//add the ')'
             }
+
         }
     }//end for of string s
     if (!buffer.empty()) {
         this->stack.push(buffer);
+    }
+    if (!varBuf.empty()) {
+        this->stack.push(to_string(this->c->getFromSymbolTable(varBuf)));
     }
     //move to the queue
     while (!this->stack.empty()) {
         this->queue.push(this->stack.top());
         this->stack.pop();
     }
-
-
 }
 
 double ShuntingYard::calculate() {
@@ -142,7 +144,7 @@ double ShuntingYard::calculate() {
 
 bool ShuntingYard::isNumber(string s) {
     for (char c:s) {
-        if (!isdigit(c)) {
+        if (!isdigit(c) && (c != '.')) {
             return false;
         }
     }
