@@ -10,12 +10,12 @@
 
 int OpenServerCommand::execute(vector<string> s) {
     try {
-
+        this->initMap();
         int port = stoi(s[0]);
         int hz = stoi(s[1]);
-        this->serverMap=new map<string,double >;
-        map<string,double >& sermap=*this->serverMap;
-        std::thread t(ServerSock::openServer,port,hz,sermap);
+//        this->serverMap=new map<string,double >;
+//        map<string,double >& sermap=*this->serverMap;
+        std::thread t(ServerSock::openServer, port, hz, ref(*this->serverMap));
         t.join();
 //        ServerSock::openServer(port, hz);
     } catch (...) {
@@ -26,6 +26,33 @@ int OpenServerCommand::execute(vector<string> s) {
 
 bool OpenServerCommand::validate(vector<string> s) {
     return false;//todo
+}
+
+void OpenServerCommand::initMap() {
+    this->serverMap = new map<string, double>();
+    this->serverMap->insert(pair<string, double>("/instrumentation/airspeed-indicator/indicated-speed-kt", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/altimeter/indicated-altitude-ft", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/altimeter/pressure-alt-ft", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/indicated-pitch-deg", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/indicated-roll-deg", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/internal-pitch-deg", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/internal-roll-deg", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/encoder/indicated-altitude-ft", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/encoder/pressure-alt-ft", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/gps/indicated-altitude-ft", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/gps/indicated-ground-speed-kt", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/gps/indicated-vertical-speed", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/heading-indicator/indicated-heading-deg", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/magnetic-compass/indicated-heading-deg", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/slip-skid-ball/indicated-slip-skid", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/turn-indicator/indicated-turn-rate", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/vertical-speed-indicator/indicated-speed-fpm", 0));
+    this->serverMap->insert(pair<string, double>("/controls/flight/aileron", 0));
+    this->serverMap->insert(pair<string, double>("/controls/flight/elevator", 0));
+    this->serverMap->insert(pair<string, double>("/controls/flight/rudder", 0));
+    this->serverMap->insert(pair<string, double>("/controls/flight/flaps", 0));
+    this->serverMap->insert(pair<string, double>("/controls/engines/engine/throttle", 0));
+
 }
 
 int ConnectCommand::execute(vector<string> s) {
@@ -100,7 +127,7 @@ int IfCommand::execute(vector<string> s) {
 
 int assingmentCommand::execute(vector<string> s) {
     string varName = s[0];
-    Expression *e = new ShuntingYard(s[2],this);
+    Expression *e = new ShuntingYard(s[2], this);
     double val = e->calculate();
 
 //    if (this->symbolTable.count(s[2]) > 0) {

@@ -26,6 +26,7 @@ protected:
 
     bool validate(vector<string> s) override;
 
+    void initMap();
 public:
     int execute(vector<string> s) override;
 };

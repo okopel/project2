@@ -72,23 +72,21 @@ public:
         }
 
         /* If connection is established then start communicating */
-        while (n > 0) {
+        while (true) {
             bzero(buffer, 256);
             n = read(newsockfd, buffer, 255);
-
+            //     cout << buffer << endl;
             std::string segment;
             std::vector<std::string> seglist;
 
             for (char c:buffer) {
-                if (c != ',') {
+                if ((c != ',') && (c != '\n')) {
                     segment += c;
                 } else {
                     seglist.push_back(segment);
                     segment = "";
                 }
             }
-
-
             map["/instrumentation/airspeed-indicator/indicated-speed-kt"] = stod(seglist[0]);
             map["/instrumentation/altimeter/indicated-altitude-ft"] = stod(seglist[1]);
             map["/instrumentation/altimeter/pressure-alt-ft"] = stod(seglist[2]);
@@ -111,7 +109,7 @@ public:
             map["/controls/flight/rudder"] = stod(seglist[19]);
             map["/controls/flight/flaps"] = stod(seglist[20]);
             map["/controls/engines/engine/throttle"] = stod(seglist[21]);
-            map["/engines/engine/rpm"] = stod(seglist[22]);
+            //  map["/engines/engine/rpm"] = stod(seglist[22]);
 
 //                        printf("Here is the message: %s\n", buffer);
 
