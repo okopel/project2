@@ -56,3 +56,9 @@ ClosePar::ClosePar() {
     this->operatorType = ')';
 
 }
+
+double BoolExpression::calculate() {
+    double r = this->Right->calculate();
+    double l = this->left->calculate();
+
+}

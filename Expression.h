@@ -90,5 +90,11 @@ public:
     double calculate() override;
 };
 
+class BoolExpression : public BinaryExpression {
+public:
+    BoolExpression(Expression *l, Expression *r);
+
+    double calculate() override;
+};
 
 #endif //PROJECT_EXPRESSION_H

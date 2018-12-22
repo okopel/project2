@@ -4,7 +4,7 @@
 
 void Client::sendToClient(const string address, double val) {
 //        if(!valifation()){throw..}
-    string msg = "set " + address + " " + to_string(val) + "\n";
+    string msg = "set " + address + " " + to_string(val) + "\r\n";
     int clientWrite = write(this->socketId, msg.c_str(), msg.length());
     if (clientWrite < 0) {
         throw "Error sending val by client";
@@ -13,7 +13,7 @@ void Client::sendToClient(const string address, double val) {
 
 }
 
-int Client::connectClient() {//todo thread
+void Client::connectClient(int portNumber, string ipPath) {
     int sockfd, n;
     struct sockaddr_in serv_addr;
     struct hostent *server;
@@ -28,7 +28,7 @@ int Client::connectClient() {//todo thread
         exit(1);
     }
 
-    server = gethostbyname(ip.c_str());
+    server = gethostbyname(ipPath.c_str());
 
     if (server == NULL) {
         fprintf(stderr, "ERROR, no such host\n");
@@ -38,7 +38,7 @@ int Client::connectClient() {//todo thread
     bzero((char *) &serv_addr, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     bcopy((char *) server->h_addr, (char *) &serv_addr.sin_addr.s_addr, server->h_length);
-    serv_addr.sin_port = htons(portno);
+    serv_addr.sin_port = htons(portNumber);
 
     /* Now connect to the server */
     if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
@@ -72,5 +72,8 @@ int Client::connectClient() {//todo thread
     }
 
     printf("%s\n", buffer);
-    return 0;
+}
+
+Client::Client(const string ip, int port) : portno(port), ip(ip) {
+    this->connectClient(port, ip);
 }

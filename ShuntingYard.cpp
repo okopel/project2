@@ -21,7 +21,9 @@ bool ShuntingYard::priority(char f, char l) {
     return priF >= priL;
 }
 
-ShuntingYard::ShuntingYard(string s, Command *com) : ComExp(com) {
+// todo neg
+ShuntingYard::ShuntingYard(string s, Command *com) {
+    this->command = com;
     string buffer;
     string varBuf;
     for (char c:s) {
@@ -39,7 +41,7 @@ ShuntingYard::ShuntingYard(string s, Command *com) : ComExp(com) {
             continue;
         } else {
             if (!varBuf.empty()) {
-                this->queue.push(to_string(this->c->getFromSymbolTable(varBuf)));
+                this->queue.push(to_string(this->command->getFromSymbolTable(varBuf)));
                 varBuf = "";
             }
             if (!buffer.empty()) {
@@ -81,7 +83,7 @@ ShuntingYard::ShuntingYard(string s, Command *com) : ComExp(com) {
         this->stack.push(buffer);
     }
     if (!varBuf.empty()) {
-        this->stack.push(to_string(this->c->getFromSymbolTable(varBuf)));
+        this->stack.push(to_string(this->command->getFromSymbolTable(varBuf)));
     }
     //move to the queue
     while (!this->stack.empty()) {

@@ -19,12 +19,11 @@ class Client {
     const string ip;
     int portno;
 public:
-    Client(const string ip, int port) : portno(port), ip(ip) {}
+    Client(const string ip, int port);
 
     void sendToClient(const string address, double val);
 
-
-    int connectClient();
+    void connectClient(int port, string ip);
 };
 
 

@@ -5,12 +5,13 @@
 #include <stack>
 #include <string>
 #include "Expression.h"
-#include "ComExp.h"
+#include "Command.h"
 
 using namespace std;
 
-class ShuntingYard : public ComExp {
+class ShuntingYard : public Expression {
 private:
+    Command *command;
     std::queue<string> queue;
     std::stack<string> stack;
 
@@ -19,7 +20,9 @@ private:
     bool isOperator(char c);
 
     bool isLetter(char c);
+
     bool priority(char f, char l);
+
     Expression *calExp(char op, Expression *e1, Expression *e2);
 
     string charToString(char c);

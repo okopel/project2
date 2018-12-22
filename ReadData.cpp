@@ -6,6 +6,7 @@
 #include <map>
 #include <vector>
 
+#include "OpenServerCommand.h"
 
 /**
  * Create map command
@@ -51,7 +52,9 @@ void ReadData::parser() {
     for (vector<string> tmp:this->vec) {
         Command *c = this->commandMap[tmp[0]];
         tmp.erase(tmp.begin());//delete the funcName
-        c->execute(tmp);//send parameters
+        c->setParam(tmp);//send parameters
+        c->execute();
+
     }
 }
 

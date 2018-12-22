@@ -1,82 +1,47 @@
 
 #include "Command.h"
+#include "ServerSock.h"
+#include "ShuntingYard.h"
+#include "ReadData.h"
+#include <stdio.h>
+#include <iostream>
+#include <thread>
+#include <functional>
 
+using namespace std;
 
-int OpenServerCommand::execute(vector<string> s) {
-    try {
-        this->initMap();
-        int port = stoi(s[0]);
-        int hz = stoi(s[1]);
-        ServerSock *serverSock = new ServerSock(port, hz);
-        std::thread(serverSock->openServer());
-
-
-//        t.join();
-    } catch (...) {
-        throw "Error in openServer";
-    }
-    return 1;
-}
-
-bool OpenServerCommand::validate(vector<string> s) {
-    return false;//todo
-}
-
-void OpenServerCommand::initMap() {
-    this->serverMap = new map<string, double>();
-    this->serverMap->insert(pair<string, double>("/instrumentation/airspeed-indicator/indicated-speed-kt", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/altimeter/indicated-altitude-ft", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/altimeter/pressure-alt-ft", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/indicated-pitch-deg", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/indicated-roll-deg", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/internal-pitch-deg", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/internal-roll-deg", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/encoder/indicated-altitude-ft", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/encoder/pressure-alt-ft", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/gps/indicated-altitude-ft", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/gps/indicated-ground-speed-kt", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/gps/indicated-vertical-speed", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/heading-indicator/indicated-heading-deg", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/magnetic-compass/indicated-heading-deg", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/slip-skid-ball/indicated-slip-skid", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/turn-indicator/indicated-turn-rate", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/vertical-speed-indicator/indicated-speed-fpm", 0));
-    this->serverMap->insert(pair<string, double>("/controls/flight/aileron", 0));
-    this->serverMap->insert(pair<string, double>("/controls/flight/elevator", 0));
-    this->serverMap->insert(pair<string, double>("/controls/flight/rudder", 0));
-    this->serverMap->insert(pair<string, double>("/controls/flight/flaps", 0));
-    this->serverMap->insert(pair<string, double>("/controls/engines/engine/throttle", 0));
-
-}
-
-int ConnectCommand::execute(vector<string> s) {
+int ConnectCommand::execute() {
     try {
 
-        string ip = s[0];
-        int port = stoi(s[1]);
-
+        string ip = this->parameters[0];
+        int port = stoi(this->parameters[1]);
         this->c = new Client(ip, port);
-        std::thread clientThread(this->c->connectClient());
+        Client *cl = new Client(ip, port);
+        // thread t(cl->connectClient(ref(port),ref(ip)));
+//        thread *treadClient = new thread(this->c->connectClient(),port,ip);
+
 
         // this->c->connectClient();
 
     } catch (...) {
         throw "Error in connectToClient";
     }
+    return 0;
 }
 
 bool ConnectCommand::validate(vector<string> s) {
     return false;
 }
 
-int DefineVarCommand::execute(vector<string> s) {
-    if (!this->validate(s)) {
+
+int DefineVarCommand::execute() {
+    if (!this->validate(this->parameters)) {
         throw "Error on VarCommand";
     }
-    string par = s[0];
+    string par = this->parameters[0];
     // ignore "=" "bind"
 
-    string path = s[3];
+    string path = this->parameters[3];
 
     this->symbolTable[par] = path;
 //    this->addVar(par, val);
@@ -100,19 +65,86 @@ bool DefineVarCommand::validate(vector<string> s) {
     return true;
 }
 
-int FuncCommand::execute(vector<string> s) {
-    0;
-}
 
-int ConditionParser::execute(vector<string> s) {
-    0;
+int ConditionParser::execute() {
+    if (!this->checkCondition(this->parameters)) {
+        return 0;
+    }
+    // ReadData readData;
+    // readData.lexer();
+
+
+
+
+    for (auto tmp:this->conditionCommandList) {
+        tmp->execute();
+    }
+
+
 }
 
 void ConditionParser::addCommand(Command *c) {
     this->conditionCommandList.push_back(c);
 }
 
-int LoopCommand::execute(vector<string> s) {
+bool ConditionParser::checkCondition(vector<string> s) {//todo rePharse
+    //delete the "{"
+    if (s[s.size() - 1] == "{") {
+        s.erase(s.end());
+    }
+    int index = this->checkCondition(s);
+    if (index == -1) {
+        throw "not condition operator!";
+    }
+    string exp1 = this->vectorToString(s, 0, index);
+    ShuntingYard sy1(exp1, this);
+    double val1 = sy1.calculate();
+    string exp2 = this->vectorToString(s, index + 1, s.size() - 1);
+    ShuntingYard sy2(exp2, this);
+    double val2 = sy2.calculate();
+    if (s[index] == "==") {
+        return val1 == val2;
+    }
+    if (s[index] == ">=") {
+        return val1 >= val2;
+    }
+    if (s[index] == "<=") {
+        return val1 <= val2;
+    }
+    if (s[index] == "!=") {
+        return val1 != val2;
+    }
+    if (s[index] == ">") {
+        return val1 > val2;
+    }
+    if (s[index] == "<") {
+        return val1 < val2;
+    } else {
+        throw "There isnt eq operator";
+    }
+
+}
+
+// todo if is one word
+int ConditionParser::getIndexOfOper(vector<string> s) {
+    for (int i = 0; i < s.size(); i++) {
+        if (s[i] == "==" || s[i] == ">=" || s[i] == "<=" || s[i] == "!=" || s[i] == "<" || s[i] == ">") {
+            return i;
+        }
+    }
+    return -1;
+}
+
+string ConditionParser::vectorToString(vector<string> s, int begin, int end) {
+    string sub;
+    for (int i = begin; i < end; i++) {
+        sub += s[i];
+    }
+    return sub;
+}
+
+
+int LoopCommand::execute() {
 //   while(conditon){
 //       for(auto tmp:this->conditionCommandList){
 //           tmp->execute()
@@ -120,13 +152,13 @@ int LoopCommand::execute(vector<string> s) {
 //   }
 }
 
-int IfCommand::execute(vector<string> s) {
+int IfCommand::execute() {
     0;
 }
 
-int assingmentCommand::execute(vector<string> s) {
-    string varName = s[0];
-    Expression *e = new ShuntingYard(s[2], this);
+int assingmentCommand::execute() {
+    string varName = this->parameters[0];
+    Expression *e = new ShuntingYard(this->parameters[2], this);
     double val = e->calculate();
     delete e;
     string path = this->symbolTable[varName];
@@ -141,4 +173,14 @@ double Command::getFromSymbolTable(string s) {
     string path = this->symbolTable[s];
     double val = this->serverMap->at(path);
     return val;
+}
+
+Command::Command(const vector<string> &parameters) : parameters(parameters) {}
+
+void Command::setParam(vector<string> parameters) {
+    this->parameters = parameters;
+}
+
+Command::Command() {
+
 }

@@ -5,12 +5,7 @@
 #include <vector>
 #include <map>
 #include "Client.h"
-#include "ServerSock.h"
-#include <thread>
 #include "Expression.h"
-#include "ComExp.h"
-#include "ShuntingYard.h"
-#include "Client.h"
 
 using namespace std;
 
@@ -19,24 +14,21 @@ protected:
     //Command *command;
     map<string, string> symbolTable;
     map<string, double> *serverMap;
+    vector<string> parameters;
     Client *c;
 
     virtual bool validate(vector<string> s) = 0;
 
 public:
+    Command(const vector<string> &parameters);
+
+    Command();
+
+    void setParam(vector<string> parameters);
+
     double getFromSymbolTable(string s);
 
-    virtual int execute(vector<string> s) = 0;
-};
-
-class OpenServerCommand : public Command {
-protected:
-    bool validate(vector<string> s) override;
-
-    void initMap();
-
-public:
-    int execute(vector<string> s) override;
+    virtual int execute() = 0;
 };
 
 class ConnectCommand : public Command {
@@ -44,7 +36,8 @@ protected:
     bool validate(vector<string> s) override;
 
 public:
-    int execute(vector<string> s) override;
+
+    int execute() override;
 };
 
 class DefineVarCommand : public Command {
@@ -57,38 +50,45 @@ public:
 
     void setVar(string s, double val);
 
-    int execute(vector<string> s) override;
-};
-
-class FuncCommand : public Command {
-public:
-    int execute(vector<string> s) override;
+    int execute() override;
 };
 
 class ConditionParser : public Command {
+private:
+
+    vector<string> rePhrser(vector<string> s);
+
+    int getIndexOfOper(vector<string> s);
+
+    string vectorToString(vector<string> s, int begin, int end);
+
 protected:
     vector<Command *> conditionCommandList;
+
 public:
+
     void addCommand(Command *c);
 
-    virtual int execute(vector<string> s) = 0;
+    bool checkCondition(vector<string> s);
+
+    virtual int execute() = 0;
 };
 
 class LoopCommand : public ConditionParser {
 public:
-    int execute(vector<string> s) override;
+    int execute() override;
 };
 
 class IfCommand : public ConditionParser {
 public:
-    int execute(vector<string> s) override;
+    int execute() override;
 };
 
 class assingmentCommand : public Command {
 private:
 
 public:
-    int execute(vector<string> s) override;
+    int execute() override;
 };
 
 #endif //PROJECT_COMMAND_H

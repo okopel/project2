@@ -4,7 +4,7 @@
 #include "text.h"
 #include <list>
 
-int main() {
+int main(int argc, char **argv) {
 
     ReadData x;
     x.lexer("data");
