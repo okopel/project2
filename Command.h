@@ -4,13 +4,22 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "Client.h"
+#include "ServerSock.h"
+#include <thread>
+#include "Expression.h"
+#include "ComExp.h"
+#include "ShuntingYard.h"
+#include "Client.h"
 
 using namespace std;
 
 class Command {
 protected:
     //Command *command;
-    map<string, double> symbolTable;
+    map<string, string> symbolTable;
+    map<string, double> *serverMap;
+    Client *c;
 
     virtual bool validate(vector<string> s) = 0;
 
@@ -22,11 +31,10 @@ public:
 
 class OpenServerCommand : public Command {
 protected:
-    map<string, double>* serverMap;
-
     bool validate(vector<string> s) override;
 
     void initMap();
+
 public:
     int execute(vector<string> s) override;
 };

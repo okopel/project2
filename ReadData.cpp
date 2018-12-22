@@ -1,6 +1,4 @@
-//
-// Created by shlomo on 16/12/18.
-//
+
 
 #include "ReadData.h"
 #include "Command.h"

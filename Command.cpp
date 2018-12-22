@@ -1,27 +1,21 @@
 
 #include "Command.h"
-#include "Client.cpp"
-#include "ServerSock.cpp"
-#include "Expression.h"
-#include "ComExp.h"
-#include "ShuntingYard.h"
-#include <thread>
-//using namespace std;
+
 
 int OpenServerCommand::execute(vector<string> s) {
     try {
         this->initMap();
         int port = stoi(s[0]);
         int hz = stoi(s[1]);
-//        this->serverMap=new map<string,double >;
-//        map<string,double >& sermap=*this->serverMap;
-        std::thread t(ServerSock::openServer, port, hz, ref(*this->serverMap));
-        t.join();
-//        ServerSock::openServer(port, hz);
+        ServerSock *serverSock = new ServerSock(port, hz);
+        std::thread(serverSock->openServer());
+
+
+//        t.join();
     } catch (...) {
         throw "Error in openServer";
     }
-
+    return 1;
 }
 
 bool OpenServerCommand::validate(vector<string> s) {
@@ -61,7 +55,11 @@ int ConnectCommand::execute(vector<string> s) {
         string ip = s[0];
         int port = stoi(s[1]);
 
-        Client::connectClient(ip, port);
+        this->c = new Client(ip, port);
+        std::thread clientThread(this->c->connectClient());
+
+        // this->c->connectClient();
+
     } catch (...) {
         throw "Error in connectToClient";
     }
@@ -76,15 +74,16 @@ int DefineVarCommand::execute(vector<string> s) {
         throw "Error on VarCommand";
     }
     string par = s[0];
-    string add = s[3];
+    // ignore "=" "bind"
 
-    double val;//todo get num from server
+    string path = s[3];
 
-
-    this->addVar(par, val);
+    this->symbolTable[par] = path;
+//    this->addVar(par, val);
 
 }
 
+/*
 void DefineVarCommand::addVar(string s, double val) {
     this->symbolTable.insert(pair<string, double>(s, val));
 }
@@ -92,7 +91,7 @@ void DefineVarCommand::addVar(string s, double val) {
 void DefineVarCommand::setVar(string s, double val) {
     this->symbolTable[s] = val;
 }
-
+*/
 bool DefineVarCommand::validate(vector<string> s) {
     if (s.size() != 2) {
         return false;
@@ -129,12 +128,9 @@ int assingmentCommand::execute(vector<string> s) {
     string varName = s[0];
     Expression *e = new ShuntingYard(s[2], this);
     double val = e->calculate();
-
-//    if (this->symbolTable.count(s[2]) > 0) {
-//        val = this->symbolTable[s[2]];
-//    }else{
-//        val=stoi
-//    }
+    delete e;
+    string path = this->symbolTable[varName];
+    this->c->sendToClient(path, val);
 
 }
 
@@ -142,5 +138,7 @@ double Command::getFromSymbolTable(string s) {
     if (this->symbolTable.count(s) == 0) {
         throw "Not in Map";
     }
-    return this->symbolTable[s];
+    string path = this->symbolTable[s];
+    double val = this->serverMap->at(path);
+    return val;
 }
