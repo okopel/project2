@@ -1,7 +1,6 @@
 #include <iostream>
 #include "ReadData.h"
 #include "ShuntingYard.h"
-#include "text.h"
 #include <list>
 
 int main(int argc, char **argv) {

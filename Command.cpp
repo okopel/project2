@@ -190,6 +190,7 @@ vector<string> ConditionParser::rePhrser(vector<string> s) {
 ConditionParser::ConditionParser() : Command() {
     this->isDad = true;
     this->dad = nullptr;
+
 }
 
 bool ConditionParser::isNumber(string s) {
@@ -200,6 +201,10 @@ bool ConditionParser::isNumber(string s) {
     }
     return true;
 
+}
+
+void ConditionParser::setParam(vector<string> parameters) {
+    this->parameters = this->rePhrser(parameters);
 }
 
 

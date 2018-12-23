@@ -31,7 +31,7 @@ public:
 
     Command();
 
-    void setParam(vector<string> parameters);
+    virtual void setParam(vector<string> parameters);
 
     double getFromSymbolTable(string s);
 
@@ -77,6 +77,8 @@ protected:
 
 public:
     ConditionParser();
+
+    void setParam(vector<string> parameters) override;
 
     void addCommand(Command *c);
 
