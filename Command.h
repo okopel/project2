@@ -17,14 +17,24 @@ using namespace std;
 
 class ConditionParser;
 
+//todo Var y = bind x
 class Command {
+
 protected:
-    //Command *command;
-    map<string, string> *symbolTable;
-    map<string, double> *serverMap;
+    //map<string, string> *symbolTable;
+    //map<string, double> *serverMap;
+    map<string, string> *pathMap;
+    map<string, double> *valMap;
     vector<string> parameters;
     vector<thread *> threadsList;
     ConditionParser *dad;
+
+    bool isNumber(string s);
+
+    bool isOperator(string s);
+
+
+    int getIndexOfDelimiter();
 
     virtual bool validate(vector<string> s) = 0;
 
@@ -72,7 +82,6 @@ public:
 
 class ConditionParser : public Command {
 private:
-    bool isNumber(string s);
 
     vector<string> rePhrser(vector<string> s);
 

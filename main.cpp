@@ -16,7 +16,6 @@ int main(int argc, char **argv) {
         throw "Give me a file please!!!";
     }
     ReadData x;
-    cout << argv[1] << endl;
     x.lexer(argv[1]);
     x.parser();
 

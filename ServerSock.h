@@ -24,7 +24,8 @@
 
 class ServerSock : public OpenServerCommand {
 public:
-    void static openServer(int portNumber, int myHz, map<string, double> &map) {
+    void static
+    openServer(int portNumber, int myHz, map<string, string> pathMapServer, map<string, double> &valMapServer) {
         cout << "try to connect.." << endl;
         int sockfd, newsockfd, clilen;
         char buffer[256];
@@ -70,7 +71,11 @@ public:
         cout << "connection has started" << endl;
         /* If connection is established then start communicating */
         while (true) {
+            string getter;
+            for (auto item:pathMapServer) {
+                getter = "get " + item.second + "\r\n";
 
+            }
             this_thread::sleep_for(0.1s);
             bzero(buffer, 256);
             n = read(newsockfd, buffer, 255);
@@ -87,30 +92,12 @@ public:
                 }
             }
             if (seglist.size() >= 22) {
-                map["/instrumentation/airspeed-indicator/indicated-speed-kt"] = stod(seglist[0]);
-                map["/instrumentation/altimeter/indicated-altitude-ft"] = stod(seglist[1]);
-                map["/instrumentation/altimeter/pressure-alt-ft"] = stod(seglist[2]);
-                map["/instrumentation/attitude-indicator/indicated-pitch-deg"] = stod(seglist[3]);
-                map["/instrumentation/attitude-indicator/indicated-roll-deg"] = stod(seglist[4]);
-                map["/instrumentation/attitude-indicator/internal-pitch-deg"] = stod(seglist[5]);
-                map["/instrumentation/attitude-indicator/internal-roll-deg"] = stod(seglist[6]);
-                map["/instrumentation/encoder/indicated-altitude-ft"] = stod(seglist[7]);
-                map["/instrumentation/encoder/pressure-alt-ft"] = stod(seglist[8]);
-                map["/instrumentation/gps/indicated-altitude-ft"] = stod(seglist[9]);
-                map["/instrumentation/gps/indicated-ground-speed-kt"] = stod(seglist[10]);
-                map["/instrumentation/gps/indicated-vertical-speed"] = stod(seglist[11]);
-                map["/instrumentation/heading-indicator/indicated-heading-deg"] = stod(seglist[12]);
-                map["/instrumentation/magnetic-compass/indicated-heading-deg"] = stod(seglist[13]);
-                map["/instrumentation/slip-skid-ball/indicated-slip-skid"] = stod(seglist[14]);
-                map["/instrumentation/turn-indicator/indicated-turn-rate"] = stod(seglist[15]);
-                map["/instrumentation/vertical-speed-indicator/indicated-speed-fpm"] = stod(seglist[16]);
-                map["/controls/flight/aileron"] = stod(seglist[17]);
-                map["/controls/flight/elevator"] = stod(seglist[18]);
-                map["/controls/flight/rudder"] = stod(seglist[19]);
-                map["/controls/flight/flaps"] = stod(seglist[20]);
-                map["/controls/engines/engine/throttle"] = stod(seglist[21]);
-                cout << "t" << stod(seglist[21]) << endl;
-                //  map["/engines/engine/rpm"] = stod(seglist[22]);
+//                int i = 0;
+                //  for (auto item:pathMapServer) {//todo check which args?
+//              for(auto item:seglist)
+//                    valMapServer.at(item.first) = stod(seglist[i]);
+//                    i++;
+//                }
             } else {
                 cout << "the simulator doesn't give 22 args" << endl;
             }

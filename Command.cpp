@@ -49,23 +49,30 @@ int DefineVarCommand::execute() {
     }
     string var = this->parameters[0];
     string path;
+    this->valMap->insert(pair<string, double>(var, 0));
     // ignore "=" "bind"
     if (this->parameters[2] == "bind") {
         path = this->parameters[3];
-        this->serverMap->insert(pair<string, double>(path, 0));
+        if (path[0] != '"') {
+            path = this->pathMap->at(path);
+        }
+        this->pathMap->insert(pair<string, string>(var, path));
+
+//        this->serverMap->insert(pair<string, double>(path, 0));
     } else {
         string tmp = "";
         for (int i = 2; i < this->parameters.size(); i++) {
             tmp += this->parameters[i];
         }
         ShuntingYard s(tmp, this);
-        path = to_string(s.calculate());
+        this->valMap->at(var) = s.calculate();
+//        path = to_string(s.calculate());
     }
 
-    if (var[0] == '(') {
-        var = var.substr(1, var.size() - 1);
-    }
-    this->symbolTable->insert(pair<string, string>(var, path));
+//    if (var[0] == '(') {
+//        var = var.substr(1, var.size() - 1);
+//    }
+//    this->symbolTable->insert(pair<string, string>(var, path));
 
 }
 
@@ -204,7 +211,7 @@ ConditionParser::ConditionParser(map<string, string> *mapPath, map<string, doubl
     this->dad = nullptr;
 }
 
-bool ConditionParser::isNumber(string s) {
+bool Command::isNumber(string s) {
     for (char c:s) {
         if ((!isdigit(c)) && (c != '.')) {
             return false;
@@ -260,29 +267,30 @@ int AssingmentCommand::execute() {
     }
     ShuntingYard s(tmp, this);
     double val = s.calculate();
-    string path = this->symbolTable->at(varName);
-    sendToClient(path, val);
+    this->valMap->at(varName) = val;
+    sendToClient(varName, val);
     return val;
 }
 
 double Command::getFromSymbolTable(string s) {
-    if (this->symbolTable->count(s) == 0) {
+    if (this->valMap->count(s) == 0) {
         cout << "not in map" << endl;
         throw "Not in Map";
     }
-    string path = this->symbolTable->at(s);
-    if (path[0] != '"') {//var case
-        path = this->serverMap->at(path);
-    }
-    double val = 0;
-    if (serverMap != nullptr) {
-        //delete the " from start and end
-        //path = path.substr(1, path.size() - 2);
-        cout << path << endl;
-        val = this->serverMap->at(path);
-    }
-
-    return val;
+    return this->valMap->at(s);
+//    string path = this->symbolTable->at(s);
+//    if (path[0] != '"') {//var case
+//        path = this->serverMap->at(path);
+//    }
+//    double val = 0;
+//    if (serverMap != nullptr) {
+//        //delete the " from start and end
+//        //path = path.substr(1, path.size() - 2);
+//        cout << path << endl;
+//        val = this->serverMap->at(path);
+//    }
+//
+//    return val;
 }
 
 
@@ -290,15 +298,44 @@ void Command::setParam(vector<string> parameters) {
     this->parameters = parameters;
 }
 
-Command::Command(map<string, string> *mapPath, map<string, double> *serverMap) {
+Command::Command(map<string, string> *mapPath, map<string, double> *valMap1) {
     this->isDad = false;
     this->dad = nullptr;
-    this->symbolTable = mapPath;
-    this->serverMap = serverMap;
+    this->pathMap = mapPath;
+    this->valMap = valMap1;
+
 }
 
 ConditionParser *Command::getDad() {
     return this->dad;
+}
+
+int Command::getIndexOfDelimiter() {
+    for (int i = 0; i < this->parameters.size(); i++) {
+
+
+        if (this->parameters[i] == ",") {
+
+            return i;
+        }
+        if (i > 0) {
+            string par1 = this->parameters[i];
+            string par2 = this->parameters[i - 1];
+            if (isNumber(par1) && isNumber(par2)) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+bool Command::isOperator(string s) {
+    for (char c:s) {
+        if (c != '+' && c != '-' && c != '*' && c != '/' && c != '(' && c != ')') {
+            return false;
+        }
+    }
+    return true;
 }
 
 bool PrintCommand::validate(vector<string> s) {

@@ -147,11 +147,21 @@ void ReadData::parser() {
             }
             continue;
         }
-        Command *c;
+        Command *c = nullptr;
         if (tmp[0] == "var") {
             c = new DefineVarCommand(this->mapSymb, this->serverMap);
-        } else {
-            c = this->commandMap[tmp[0]];
+        } else if (tmp[0] == "print") {
+            c = new PrintCommand(this->mapSymb, this->serverMap);
+        } else if (tmp[0] == "if") {
+            c = new IfCommand(this->mapSymb, this->serverMap);
+        } else if (tmp[0] == "while") {
+            c = new LoopCommand(this->mapSymb, this->serverMap);
+        } else if (tmp[0] == "sleep") {
+            c = new SleepCommand(this->mapSymb, this->serverMap);
+        } else if (tmp[0] == "openDataServer") {
+            c = new OpenServerCommand(this->mapSymb, this->serverMap);
+        } else if (tmp[0] == "connect") {
+            c = new ConnectCommand(this->mapSymb, this->serverMap);
         }
         if (c == nullptr) {
             c = new AssingmentCommand(this->mapSymb, this->serverMap);
@@ -165,7 +175,7 @@ void ReadData::parser() {
             commandList.push_back(c);
         }
         if (c->isDad) {
-            c->setDad(dad);
+            //c->setDad(dad);
             dad = (ConditionParser *) c;
         }
         string check = tmp[tmp.size() - 1];
@@ -199,7 +209,6 @@ ReadData::getVector() const {
 bool ReadData::isVarInMap(string s) {
     return true;//todo checking before assigment
 }
-
 
 
 bool ReadData::isOperator(char c) {

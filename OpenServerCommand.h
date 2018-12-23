@@ -17,8 +17,6 @@ class OpenServerCommand : public Command {
 protected:
     bool validate(vector<string> s) override;
 
-    void initMap();
-
 public:
     OpenServerCommand(map<string, string> *mapPath, map<string, double> *serverMap);
 

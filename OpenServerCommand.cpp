@@ -11,15 +11,32 @@
 #include <string>
 #include <string.h>
 #include <thread>
+#include "ShuntingYard.h"
 
 using namespace std;
 
 int OpenServerCommand::execute() {
     try {
-        int port = stoi(this->parameters[0]);
-        int hz = stoi(this->parameters[1]);
-        map<string, double> &sermap = *this->serverMap;
-        thread *openServ = new thread(ServerSock::openServer, (port), (hz), ref(sermap));
+        int index = this->getIndexOfDelimiter();
+        if (index == -1) {
+            throw "just one arg!";
+        }
+        string ex1;
+        string ex2;
+        for (int i = 0; i < this->parameters.size(); i++) {
+            if (i < index) {
+                ex1 += this->parameters[i];
+            } else {
+                ex2 += this->parameters[i];
+            }
+        }
+        ShuntingYard s1(ex1, this);//todo check if work
+        ShuntingYard s2(ex2, this);
+        int port = (int) s1.calculate();
+        int hz = (int) s2.calculate();
+        map<string, string> &refPathMap = *this->pathMap;
+        map<string, double> &refValMap = *this->valMap;
+        thread *openServ = new thread(ServerSock::openServer, (port), (hz), refPathMap, ref(refValMap));
         this->threadsList.push_back(openServ);
 
     } catch (...) {
