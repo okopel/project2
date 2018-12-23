@@ -27,7 +27,9 @@ void sendToClient(const string address, double val) {
 
 void ConnectClient(int portNumber, string ipPath) {
     int waiter;
+    cout << "ener Num to continu" << endl;
     cin >> waiter;
+    cout << "client started" << endl;
     // sleep(10);
     int n, sockfd;
     struct sockaddr_in serv_addr;

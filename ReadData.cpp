@@ -29,6 +29,80 @@ ReadData::ReadData() {
     commandMap.insert(pair<string, Command *>("sleep", new SleepCommand(this->mapSymb, this->serverMap)));
 }
 
+/**
+ * parse the line to exp, operator, expression etc
+ * @param line string of line
+ * @return vector
+ */
+vector<string> ReadData::arrangeVector(string line) {
+    cout << "before:" << line << endl;
+    vector<string> vector;
+    string buffer;
+    bool isPath = false;
+    for (int i = 0; i < line.size(); i++) {
+        if (line[i] == '"') {
+            if (!buffer.empty() && !isPath) {
+                vector.push_back(buffer);
+                buffer = "";
+            }
+            buffer += line[i];
+            isPath = !isPath;
+        } else if (isPath) {
+            buffer += line[i];
+        } else if (line[i] == ',' || line[i] == ' ') {
+            if (!buffer.empty()) {
+                vector.push_back(buffer);
+                buffer = "";
+            }
+            continue;
+        } else if (isalpha(line[i])) {
+            buffer += line[i];
+        } else if (line[i] == '.' || isdigit(line[i])) {
+            buffer += line[i];
+        } else if (isOperator(line[i]) || isPar(line[i])) {//+-*/() case so this has to enter alone
+            if (!buffer.empty()) {
+                vector.push_back(buffer);
+                buffer = "";
+            }
+            buffer += line[i];
+            vector.push_back(buffer);
+            buffer = "";
+        } else if (isBoolOperator(
+                line[i])) { // != < > <= >= == case so we check if is lonely operator or double operator(==)
+            if (!buffer.empty()) {
+                vector.push_back(buffer);
+                buffer = "";
+            }
+            int i2 = i + 1;
+            while ((i2 < line.size()) && line[i2] == ' ') {
+                i2++;
+            }
+            if (isBoolOperator(line[i2])) {
+                buffer += line[i];
+                buffer += line[i2];
+                vector.push_back(buffer);
+                buffer = "";
+                i = i2;
+                continue;
+            } else {
+                buffer += line[i];
+                vector.push_back(buffer);
+                buffer = "";
+                continue;
+            }
+        }
+
+    }
+    if (!buffer.empty()) {
+        vector.push_back(buffer);
+    }
+    cout << "after:";
+    for (string s:vector) {
+        cout << s << "\t";
+    }
+    cout << endl << "______" << endl;
+    return vector;
+}
 
 /**
  * make array of words
@@ -45,11 +119,13 @@ void ReadData::lexer(string file) {
         s = "";
         getline(ifs, s);
         //parse line to words
-        std::istringstream iss(s);
-        std::vector<std::string> results(std::istream_iterator<std::string>{iss},
-                                         std::istream_iterator<std::string>());
+//        std::istringstream iss(s);
+//        std::vector<std::string> results(std::istream_iterator<std::string>{iss},
+//                                         std::istream_iterator<std::string>());
         //each line in a node
-        this->vec.push_back(results);
+        if (!s.empty()) {
+            this->vec.push_back(this->arrangeVector(s));
+        }
     }
 
 //    this->vec = results;
@@ -147,4 +223,16 @@ void ReadData::initMap() {
     this->serverMap->insert(pair<string, double>("/controls/flight/flaps", 0));
     this->serverMap->insert(pair<string, double>("/controls/engines/engine/throttle", 0));
 
+}
+
+bool ReadData::isOperator(char c) {
+    return (c == '+' || c == '-' || c == '*' || c == '/');
+}
+
+bool ReadData::isBoolOperator(char c) {
+    return (c == '>' || c == '<' || c == '=' || c == '!');
+}
+
+bool ReadData::isPar(char c) {
+    return (c == ')' || c == '(' || c == '{' || c == '}');
 }

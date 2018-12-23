@@ -25,6 +25,7 @@
 class ServerSock : public OpenServerCommand {
 public:
     void static openServer(int portNumber, int myHz, map<string, double> &map) {
+        cout << "try to connect.." << endl;
         int sockfd, newsockfd, clilen;
         char buffer[256];
         struct sockaddr_in serv_addr, cli_addr;
@@ -66,7 +67,7 @@ public:
             perror("ERROR on accept");
             exit(1);
         }
-
+        cout << "connection has started" << endl;
         /* If connection is established then start communicating */
         while (true) {
             this_thread::sleep_for(0.1s);
@@ -77,6 +78,7 @@ public:
 
             for (char c:buffer) {
                 if ((c != ',') && (c != '\n')) {
+
                     segment += c;
                 } else {
                     seglist.push_back(segment);
@@ -106,22 +108,23 @@ public:
                 map["/controls/flight/rudder"] = stod(seglist[19]);
                 map["/controls/flight/flaps"] = stod(seglist[20]);
                 map["/controls/engines/engine/throttle"] = stod(seglist[21]);
+                cout << "t" << stod(seglist[21]) << endl;
                 //  map["/engines/engine/rpm"] = stod(seglist[22]);
             } else {
                 cout << "the simulator doesn't give 22 args" << endl;
             }
-            if (n < 0) {
-                perror("ERROR reading from socket");
-                exit(1);
-            }
+//            if (n < 0) {
+//                perror("ERROR reading from socket");
+//                exit(1);
+//            }
 
             /* Write a response to the client */
-            n = write(newsockfd, "I got your message", 18);
-
-            if (n < 0) {
-                perror("ERROR writing to socket");
-                exit(1);
-            }
+//            n = write(newsockfd, "I got your message", 18);
+//
+//            if (n < 0) {
+//                perror("ERROR writing to socket");
+//                exit(1);
+//            }
         }
     }
 };

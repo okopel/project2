@@ -298,7 +298,6 @@ double Command::getFromSymbolTable(string s) {
 
 void Command::setParam(vector<string> parameters) {
     this->parameters = parameters;
-
 }
 
 Command::Command(map<string, string> *mapPath, map<string, double> *serverMap) {

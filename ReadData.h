@@ -22,6 +22,14 @@ class ReadData {
 private:
     bool isVarInMap(string s);
 
+    bool isOperator(char c);
+
+    bool isBoolOperator(char c);
+
+    bool isPar(char c);
+
+    vector<string> arrangeVector(string line);
+
     vector<vector<string>> vec;
     map<string, Command *> commandMap;
     map<string, string> *mapSymb;
