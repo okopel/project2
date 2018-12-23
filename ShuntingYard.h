@@ -1,3 +1,10 @@
+/*****************************
+ * Project of:
+ * Ori Kopel 205533151
+ * Shlomo Rabinovich 308432517
+ * December 18
+ ******************************/
+
 #ifndef PROJECT_SHUNTINGYARD_H
 #define PROJECT_SHUNTINGYARD_H
 

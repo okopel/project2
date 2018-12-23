@@ -20,6 +20,7 @@ using namespace std;
 class ReadData {
 
 private:
+    bool isVarInMap(string s);
     vector<vector<string>> vec;
     map<string, Command *> commandMap;
 

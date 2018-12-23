@@ -1,5 +1,10 @@
 
-
+/*****************************
+ * Project of:
+ * Ori Kopel 205533151
+ * Shlomo Rabinovich 308432517
+ * December 18
+ ******************************/
 #ifndef PROJECT_COMEXP_H
 #define PROJECT_COMEXP_H
 

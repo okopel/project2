@@ -1,3 +1,10 @@
+/*****************************
+ * Project of:
+ * Ori Kopel 205533151
+ * Shlomo Rabinovich 308432517
+ * December 18
+ ******************************/
+
 #ifndef PROJECT_EXPRESSION_H
 #define PROJECT_EXPRESSION_H
 
@@ -25,6 +32,7 @@ public:
 
         this->value = stod(values);
     }
+
     double calculate() override;
 
 };

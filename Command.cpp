@@ -1,3 +1,9 @@
+/*****************************
+ * Project of:
+ * Ori Kopel 205533151
+ * Shlomo Rabinovich 308432517
+ * December 18
+ ******************************/
 
 #include "Command.h"
 #include "ServerSock.h"
@@ -208,6 +214,10 @@ void ConditionParser::setParam(vector<string> parameters) {
     this->parameters = this->rePhrser(parameters);
 }
 
+void Command::setDad(ConditionParser *c) {
+    this->dad = c;
+}
+
 
 int LoopCommand::execute() {
     while (this->checkCondition()) {
@@ -233,7 +243,6 @@ int AssingmentCommand::execute() {
     delete e;
     string path = this->symbolTable[varName];
     this->c->sendToClient(path, val);
-
     return val;
 }
 

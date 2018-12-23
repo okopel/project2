@@ -1,4 +1,9 @@
-
+/*****************************
+ * Project of:
+ * Ori Kopel 205533151
+ * Shlomo Rabinovich 308432517
+ * December 18
+ ******************************/
 
 #include "ReadData.h"
 #include "Command.h"
@@ -57,7 +62,7 @@ void ReadData::parser() {
     for (vector<string> tmp:this->vec) {
         if (tmp.size() <= 1) {
             if (tmp.size() == 1 && tmp[0] == "}") {
-                dad = nullptr;
+                dad = dad->getDad();
             }
             continue;
         }
@@ -75,9 +80,11 @@ void ReadData::parser() {
             commandList.push_back(c);
         }
         if (c->isDad) {
+            c->setDad(dad);
             dad = (ConditionParser *) c;
         }
-        if (tmp[tmp.size() - 1] == "}") {
+        string check = tmp[tmp.size() - 1];
+        if (check == "}" || check[check.size() - 1] == '}') {
             dad = dad->getDad();
         }
 //        c->execute();
@@ -103,4 +110,8 @@ const std::vector<vector<string>> &
 
 ReadData::getVector() const {
     return this->vec;
+}
+
+bool ReadData::isVarInMap(string s) {
+    return true;//todo checking before assigment
 }

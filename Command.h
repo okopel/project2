@@ -1,3 +1,9 @@
+/*****************************
+ * Project of:
+ * Ori Kopel 205533151
+ * Shlomo Rabinovich 308432517
+ * December 18
+ ******************************/
 #ifndef PROJECT_COMMAND_H
 #define PROJECT_COMMAND_H
 
@@ -28,6 +34,8 @@ public:
     bool isDad;
 
     Command(const vector<string> &parameters);
+
+    void setDad(ConditionParser *c);
 
     Command();
 
@@ -77,6 +85,7 @@ protected:
 
 public:
     ConditionParser();
+
 
     void setParam(vector<string> parameters) override;
 

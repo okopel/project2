@@ -1,4 +1,11 @@
 
+/*****************************
+ * Project of:
+ * Ori Kopel 205533151
+ * Shlomo Rabinovich 308432517
+ * December 18
+ ******************************/
+
 #ifndef PROJECT_OPENSERVERCOMMAND_H
 #define PROJECT_OPENSERVERCOMMAND_H
 
