@@ -11,7 +11,6 @@
 #include <vector>
 #include <map>
 #include <thread>
-#include "Client.h"
 #include "Expression.h"
 
 using namespace std;
@@ -24,7 +23,6 @@ protected:
     map<string, string> *symbolTable;
     map<string, double> *serverMap;
     vector<string> parameters;
-    Client *c;
     vector<thread *> threadsList;
     ConditionParser *dad;
 

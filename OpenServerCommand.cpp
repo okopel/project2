@@ -18,15 +18,10 @@ int OpenServerCommand::execute() {
     try {
         int port = stoi(this->parameters[0]);
         int hz = stoi(this->parameters[1]);
-//        ServerSock *serverSock = new ServerSock();
-//        thread t(serverSock->openServer());
         map<string, double> &sermap = *this->serverMap;
         thread *openServ = new thread(ServerSock::openServer, (port), (hz), ref(sermap));
         this->threadsList.push_back(openServ);
 
-        //openServ->join();
-
-//        t.join();
     } catch (...) {
         throw "Error in openServer";
     }

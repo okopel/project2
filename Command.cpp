@@ -13,25 +13,16 @@
 #include <iostream>
 #include <thread>
 #include <functional>
+#include "Client.h"
 
 using namespace std;
 
+
 int ConnectCommand::execute() {
     try {
-
         string ip = this->parameters[0];
         int port = stoi(this->parameters[1]);
-        int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-        //  this->c = new Client(ip, port);//todo!!!! we need ref to client in order to send parameters
-        // thread *client = new thread(Client::connectClient, port, ip, sockfd);
-        // this->threadsList.push_back(client);
-        //Client *cl = new Client(ip, port);
-        // thread t(cl->connectClient(ref(port),ref(ip)));
-
-        //thread *treadClient = new thread(new Client(),ip,port);
-
-
-        // this->c->connectClient();
+        this->threadsList.push_back(new thread(ConnectClient, port, ip));
 
     } catch (...) {
         throw "Error in connectToClient";
@@ -278,7 +269,7 @@ int AssingmentCommand::execute() {
     double val = e->calculate();
     delete e;
     string path = this->symbolTable->at(varName);
-    // this->c->sendToClient(path, val);//todo!!
+    sendToClient(path, val);
     return val;
 }
 
@@ -360,3 +351,5 @@ AssingmentCommand::AssingmentCommand(map<string, string> *mapPath, map<string, d
                                                                                                           server) {
     this->serverMap = server;
 }
+
+

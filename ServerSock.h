@@ -21,17 +21,9 @@
 #include <chrono>
 #include "OpenServerCommand.h"
 
-//typedef void *(*THREADFUNCPTR)(void *);
-
 
 class ServerSock : public OpenServerCommand {
-//    int portno;
-//    int hz;
 public:
-    //   void setValues(std::string buffer);
-
-//    ServerSock(int portno, int hz);
-
     void static openServer(int portNumber, int myHz, map<string, double> &map) {
         int sockfd, newsockfd, clilen;
         char buffer[256];
@@ -48,7 +40,7 @@ public:
 
         /* Initialize socket structure */
         bzero((char *) &serv_addr, sizeof(serv_addr));
-//        portno = 5001;
+
 
         serv_addr.sin_family = AF_INET;
         serv_addr.sin_addr.s_addr = INADDR_ANY;
@@ -77,11 +69,8 @@ public:
 
         /* If connection is established then start communicating */
         while (true) {
-            //  std::this_thread::sleep_for(std::chrono::milliseconds(hz));
-
             bzero(buffer, 256);
             n = read(newsockfd, buffer, 255);
-            //     cout << buffer << endl;
             std::string segment;
             std::vector<std::string> seglist;
 
@@ -120,13 +109,10 @@ public:
             } else {
                 cout << "the simulator doesn't give 22 args" << endl;
             }
-//                        printf("Here is the message: %s\n", buffer);
             if (n < 0) {
                 perror("ERROR reading from socket");
                 exit(1);
             }
-
-            printf("Here is the message: %s\n", buffer);
 
             /* Write a response to the client */
             n = write(newsockfd, "I got your message", 18);

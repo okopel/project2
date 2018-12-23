@@ -10,7 +10,6 @@
 #include <iterator>
 #include <map>
 #include <vector>
-
 #include "OpenServerCommand.h"
 
 /**
