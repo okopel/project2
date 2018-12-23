@@ -27,10 +27,9 @@ void sendToClient(const string address, double val) {
 
 void ConnectClient(int portNumber, string ipPath) {
     int waiter;
-    cout << "ener Num to continu" << endl;
+    cout << "enter Num to continue" << endl;
     cin >> waiter;
     cout << "client started" << endl;
-    // sleep(10);
     int n, sockfd;
     struct sockaddr_in serv_addr;
     struct hostent *server;
@@ -62,21 +61,13 @@ void ConnectClient(int portNumber, string ipPath) {
         exit(1);
     }
 
-    /* Now ask for a message from the user, this message
-       * will be read by server
-    */
-
-//    printf("Please enter the message: ");
-//    bzero(buffer, 256);
-//    fgets(buffer, 255, stdin);
-
     /* Send message to the server */
     while (true) {
         this_thread::sleep_for(0.1s);
-
         if (!msgToServer.empty()) {
             const char *c = msgToServer.c_str();
-            n = write(sockfd, c, strlen(buffer));
+            //n = write(sockfd, c, strlen(buffer));
+            n = send(sockfd, c, strlen(buffer), MSG_EOR);//todo MSG_OOB?
             msgToServer = "";
         }
         if (n < 0) {
@@ -84,8 +75,6 @@ void ConnectClient(int portNumber, string ipPath) {
             exit(1);
         }
     }
-
-
 
 //    /* Now read server response */
 //    bzero(buffer, 256);

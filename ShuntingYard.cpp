@@ -26,12 +26,11 @@ bool ShuntingYard::priority(char f, char l) {
     return priF >= priL;
 }
 
-// todo neg
 ShuntingYard::ShuntingYard(string s, Command *com) {
     if (s.empty()) {
         return;
     }
-    // cout << s << endl;
+    s = arrangeString(s);
     this->command = com;
     string buffer;
     string varBuf;
@@ -179,4 +178,48 @@ string ShuntingYard::charToString(char c) {
 bool ShuntingYard::isLetter(char c) {
     return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
 
+}
+
+string ShuntingYard::arrangeString(string s) {
+    string res;
+    for (char c:s) {
+        if (c != ' ') {
+            res += c;
+        }
+    }
+    s = "";
+    if (res[0] == '-') {
+        s = "0";
+    }
+    s += res;
+    for (int i = 0; i < s.length() - 1; i++) {
+        if ((s[i] == '-' && s[i + 1] == '-') || ((s[i] == '+' && s[i + 1] == '+'))) {
+            s[i] = '+';
+            s[i + 1] = ' ';
+            i = 0;
+        }
+        if ((s[i] == '-' && s[i + 1] == '+') || ((s[i] == '+' && s[i + 1] == '-'))) {
+            s[i] = '-';
+            s[i + 1] = ' ';
+            i = 0;
+        }
+        if (s[i] == '*' && s[i + 1] == '+') {
+            s[i] = '*';
+            s[i + 1] = ' ';
+            i = 0;
+        }
+        if (s[i] == '/' && s[i + 1] == '+') {
+            s[i] = '/';
+            s[i + 1] = ' ';
+            i = 0;
+        }
+    }
+    res = "";
+    for (char c:s) {
+        if (c != ' ') {
+            res += c;
+        }
+    }
+    s = res;
+    return s;
 }

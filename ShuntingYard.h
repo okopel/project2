@@ -34,6 +34,8 @@ private:
 
     string charToString(char c);
 
+    string arrangeString(string s);
+
 public:
     /**
      *

@@ -21,7 +21,12 @@ using namespace std;
 int ConnectCommand::execute() {
     try {
         string ip = this->parameters[0];
-        int port = stoi(this->parameters[1]);
+        string tmp = "";
+        for (int i = 1; i < this->parameters.size(); i++) {
+            tmp += this->parameters[i];
+        }
+        ShuntingYard s(tmp, this);
+        int port = (int) s.calculate();
         this->threadsList.push_back(new thread(ConnectClient, port, ip));
 
     } catch (...) {
@@ -42,36 +47,29 @@ int DefineVarCommand::execute() {
     if (!this->validate(this->parameters)) {
         throw "Error on VarCommand";
     }
-    string par = this->parameters[0];
+    string var = this->parameters[0];
     string path;
     // ignore "=" "bind"
     if (this->parameters[2] == "bind") {
         path = this->parameters[3];
+        this->serverMap->insert(pair<string, double>(path, 0));
     } else {
-        path = this->parameters[2];
+        string tmp = "";
+        for (int i = 2; i < this->parameters.size(); i++) {
+            tmp += this->parameters[i];
+        }
+        ShuntingYard s(tmp, this);
+        path = to_string(s.calculate());
     }
 
-    //this->symbolTable[par] = path;
-    if (par[0] == '(') {
-        par = par.substr(1, par.size() - 1);
+    if (var[0] == '(') {
+        var = var.substr(1, var.size() - 1);
     }
-    this->symbolTable->insert(pair<string, string>(par, path));
-//    this->addVar(par, val);
+    this->symbolTable->insert(pair<string, string>(var, path));
 
 }
 
-/*
-void DefineVarCommand::addVar(string s, double val) {
-    this->symbolTable.insert(pair<string, double>(s, val));
-}
-
-void DefineVarCommand::setVar(string s, double val) {
-    this->symbolTable[s] = val;
-}
-*/
 bool DefineVarCommand::validate(vector<string> s) {
-
-    //todo validate that the args is numbers
     return true;
 }
 
@@ -82,25 +80,14 @@ DefineVarCommand::DefineVarCommand(map<string, string> *mapPath, map<string, dou
 }
 
 
-int ConditionParser::execute() {
-    if (!this->checkCondition()) {
-        return 0;
-    }
-    // ReadData readData;
-    // readData.lexer();
-
-    for (auto tmp:this->conditionCommandList) {
-        tmp->execute();
-    }
-
-
-}
-
 void ConditionParser::addCommand(Command *c) {
+    if (c == nullptr) {
+        return;
+    }
     this->conditionCommandList.push_back(c);
 }
 
-bool ConditionParser::checkCondition() {//todo rePharse
+bool ConditionParser::checkCondition() {
     //delete the "{"
     if (this->parameters[this->parameters.size() - 1] == "{") {
         this->parameters.erase(this->parameters.end());
@@ -142,7 +129,6 @@ bool ConditionParser::checkCondition() {//todo rePharse
 
 }
 
-// todo if is one word
 int ConditionParser::getIndexOfOper(vector<string> s) {
     for (int i = 0; i < s.size(); i++) {
         if (s[i] == "==" || s[i] == ">=" || s[i] == "<=" || s[i] == "!=" || s[i] == "<" || s[i] == ">") {
@@ -159,65 +145,63 @@ string ConditionParser::vectorToString(int begin, int end) {
     }
     return sub;
 }
-
-vector<string> ConditionParser::rePhrser(vector<string> s) {
-    vector<string> newS;
-    for (auto tmp:s) {
-        if (isNumber(tmp)) {
-            newS.push_back(tmp);
-            continue;
-        }
-        int i = -1;
-        if (i == -1) {
-            i = tmp.find("<=");//split by <=
-        }
-        if (i == -1) {
-            i = tmp.find(">=");//split by >=
-        }
-        if (i == -1) {
-            i = tmp.find("==");//split by ==
-        }
-        if (i == -1) {
-            i = tmp.find("!=");//split by !=
-        }
-        if (i != -1) {
-            newS.push_back(tmp.substr(0, i));
-            newS.push_back(tmp.substr(i, i + 1));
-            newS.push_back(tmp.substr(i + 2));
-            continue;
-        }
-        i = tmp.find("<");//split by <
-        if (i == -1) {
-            i = tmp.find(">");//split by !=
-        }
-        if (i == -1) {
-            i = tmp.find(",");//split by !=
-        }
-        if (i != -1) {
-            newS.push_back(tmp.substr(0, i + 1));
-            string buf = tmp.substr(i + 1);
-            if (!buf.empty()) {
-                newS.push_back(buf);
-            }
-//            buf = tmp.substr(i + 2);
+//
+//vector<string> ConditionParser::rePhrser(vector<string> s) {
+//    vector<string> newS;
+//    for (auto tmp:s) {
+//        if (isNumber(tmp)) {
+//            newS.push_back(tmp);
+//            continue;
+//        }
+//        int i = -1;
+//        if (i == -1) {
+//            i = tmp.find("<=");//split by <=
+//        }
+//        if (i == -1) {
+//            i = tmp.find(">=");//split by >=
+//        }
+//        if (i == -1) {
+//            i = tmp.find("==");//split by ==
+//        }
+//        if (i == -1) {
+//            i = tmp.find("!=");//split by !=
+//        }
+//        if (i != -1) {
+//            newS.push_back(tmp.substr(0, i));
+//            newS.push_back(tmp.substr(i, i + 1));
+//            newS.push_back(tmp.substr(i + 2));
+//            continue;
+//        }
+//        i = tmp.find("<");//split by <
+//        if (i == -1) {
+//            i = tmp.find(">");//split by !=
+//        }
+//        if (i == -1) {
+//            i = tmp.find(",");//split by !=
+//        }
+//        if (i != -1) {
+//            newS.push_back(tmp.substr(0, i + 1));
+//            string buf = tmp.substr(i + 1);
 //            if (!buf.empty()) {
 //                newS.push_back(buf);
 //            }
-            continue;
-
-        }
-        newS.push_back(tmp);
-    }
-    this->parameters = newS;
-    return newS;
-}
+////            buf = tmp.substr(i + 2);
+////            if (!buf.empty()) {
+////                newS.push_back(buf);
+////            }
+//            continue;
+//
+//        }
+//        newS.push_back(tmp);
+//    }
+//    this->parameters = newS;
+//    return newS;
+//}
 
 ConditionParser::ConditionParser(map<string, string> *mapPath, map<string, double> *serverMap) : Command(mapPath,
                                                                                                          serverMap) {
     this->isDad = true;
     this->dad = nullptr;
-
-
 }
 
 bool ConditionParser::isNumber(string s) {
@@ -231,14 +215,12 @@ bool ConditionParser::isNumber(string s) {
 }
 
 void ConditionParser::setParam(vector<string> parameters) {
-//    this->parameters = this->rePhrser(parameters);
     this->parameters = parameters;
 }
 
 void Command::setDad(ConditionParser *c) {
     this->dad = c;
 }
-
 
 int LoopCommand::execute() {
     while (this->checkCondition()) {
@@ -256,7 +238,11 @@ LoopCommand::LoopCommand(map<string, string> *mapPath, map<string, double> *serv
                                                                                                       server) {}
 
 int IfCommand::execute() {
-    0;
+    if (this->checkCondition()) {
+        for (auto tmp:this->conditionCommandList) {
+            tmp->execute();
+        }
+    }
 }
 
 bool IfCommand::validate(vector<string> s) {
@@ -268,9 +254,12 @@ IfCommand::IfCommand(map<string, string> *mapPath, map<string, double> *server) 
 
 int AssingmentCommand::execute() {
     string varName = this->parameters[0];
-    Expression *e = new ShuntingYard(this->parameters[2], this);
-    double val = e->calculate();
-    delete e;
+    string tmp = "";
+    for (int i = 2; i < this->parameters.size(); i++) {
+        tmp += this->parameters[i];
+    }
+    ShuntingYard s(tmp, this);
+    double val = s.calculate();
     string path = this->symbolTable->at(varName);
     sendToClient(path, val);
     return val;
@@ -283,12 +272,13 @@ double Command::getFromSymbolTable(string s) {
     }
     string path = this->symbolTable->at(s);
     if (path[0] != '"') {//var case
-        path = this->symbolTable->at(path);
+        path = this->serverMap->at(path);
     }
     double val = 0;
     if (serverMap != nullptr) {
         //delete the " from start and end
-        path = path.substr(1, path.size() - 2);
+        //path = path.substr(1, path.size() - 2);
+        cout << path << endl;
         val = this->serverMap->at(path);
     }
 
@@ -316,7 +306,7 @@ bool PrintCommand::validate(vector<string> s) {
 }
 
 int PrintCommand::execute() {
-    string buffer;
+    string buffer = "";
 
     for (auto tmp:this->parameters) {
         buffer += tmp;
@@ -333,7 +323,11 @@ int PrintCommand::execute() {
 PrintCommand::PrintCommand(map<string, string> *mapPath, map<string, double> *server) : Command(mapPath, server) {}
 
 int SleepCommand::execute() {
-    ShuntingYard sy(this->parameters[0], this);
+    string buffer = "";
+    for (auto tmp:this->parameters) {
+        buffer += tmp;
+    }
+    ShuntingYard sy(buffer, this);
     double val = sy.calculate();
     sleep(val);
     return val;
@@ -351,7 +345,6 @@ bool AssingmentCommand::validate(vector<string> s) {
 
 AssingmentCommand::AssingmentCommand(map<string, string> *mapPath, map<string, double> *server) : Command(mapPath,
                                                                                                           server) {
-    this->serverMap = server;
 }
 
 

@@ -29,7 +29,7 @@ int OpenServerCommand::execute() {
 }
 
 bool OpenServerCommand::validate(vector<string> s) {
-    return false;//todo
+    return false;
 }
 
 

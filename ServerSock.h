@@ -70,6 +70,7 @@ public:
         cout << "connection has started" << endl;
         /* If connection is established then start communicating */
         while (true) {
+
             this_thread::sleep_for(0.1s);
             bzero(buffer, 256);
             n = read(newsockfd, buffer, 255);
