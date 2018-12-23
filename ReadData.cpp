@@ -94,7 +94,6 @@ void ReadData::parser() {
         if (check == "}" || check[check.size() - 1] == '}') {
             dad = dad->getDad();
         }
-//        c->execute();
     }
 
     for (Command *tmp:commandList) {

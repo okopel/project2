@@ -26,7 +26,9 @@ void sendToClient(const string address, double val) {
 }
 
 void ConnectClient(int portNumber, string ipPath) {
-    sleep(10);
+    int waiter;
+    cin >> waiter;
+    // sleep(10);
     int n, sockfd;
     struct sockaddr_in serv_addr;
     struct hostent *server;
@@ -68,6 +70,8 @@ void ConnectClient(int portNumber, string ipPath) {
 
     /* Send message to the server */
     while (true) {
+        this_thread::sleep_for(0.1s);
+
         if (!msgToServer.empty()) {
             const char *c = msgToServer.c_str();
             n = write(sockfd, c, strlen(buffer));

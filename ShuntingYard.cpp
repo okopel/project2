@@ -29,6 +29,10 @@ bool ShuntingYard::priority(char f, char l) {
 
 // todo neg
 ShuntingYard::ShuntingYard(string s, Command *com) {
+    if (s.empty()) {
+        return;
+    }
+    // cout << s << endl;
     this->command = com;
     string buffer;
     string varBuf;
@@ -38,11 +42,11 @@ ShuntingYard::ShuntingYard(string s, Command *com) {
             continue;
         }
         //number case
-        if (isdigit(c) || c == '.') {
+        if ((isdigit(c) || c == '.') && varBuf.empty()) {
             buffer += c;
             continue;
         }
-        if (isLetter(c) || (c == '_')) {
+        if ((isLetter(c) || (c == '_')) || (isdigit(c))) {
             varBuf += c;
             continue;
         } else {

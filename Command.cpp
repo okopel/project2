@@ -52,6 +52,9 @@ int DefineVarCommand::execute() {
     }
 
     //this->symbolTable[par] = path;
+    if (par[0] == '(') {
+        par = par.substr(1, par.size() - 1);
+    }
     this->symbolTable->insert(pair<string, string>(par, path));
 //    this->addVar(par, val);
 
