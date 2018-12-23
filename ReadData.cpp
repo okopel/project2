@@ -12,10 +12,13 @@
  * Create map command
  */
 ReadData::ReadData() {
-    commandMap.insert(pair<string, Command *>("connect", new ConnectCommand()));
     commandMap.insert(pair<string, Command *>("openDataServer", new OpenServerCommand()));
+    commandMap.insert(pair<string, Command *>("connect", new ConnectCommand()));
     commandMap.insert(pair<string, Command *>("var", new DefineVarCommand()));
-
+    commandMap.insert(pair<string, Command *>("while", new LoopCommand()));
+    commandMap.insert(pair<string, Command *>("if", new ConnectCommand()));
+    commandMap.insert(pair<string, Command *>("print", new PrintCommand()));
+    commandMap.insert(pair<string, Command *>("sleep", new SleepCommand()));
 }
 
 
@@ -49,14 +52,39 @@ void ReadData::lexer(string file) {
  *
  */
 void ReadData::parser() {
+    ConditionParser *dad = nullptr;
+    vector<Command *> commandList;
     for (vector<string> tmp:this->vec) {
+        if (tmp.size() <= 1) {
+            if (tmp.size() == 1 && tmp[0] == "}") {
+                dad = nullptr;
+            }
+            continue;
+        }
         Command *c = this->commandMap[tmp[0]];
         tmp.erase(tmp.begin());//delete the funcName
         c->setParam(tmp);//send parameters
-        c->execute();
+        if (dad != nullptr) {
+            dad->addCommand(c);
 
+        } else {
+            commandList.push_back(c);
+        }
+        if (c->isDad) {
+            dad = (ConditionParser *) c;
+        }
+        if (tmp[tmp.size() - 1] == "}") {
+            dad = dad->getDad();
+        }
+//        c->execute();
     }
-}
+
+    for (Command *tmp:commandList) {
+        tmp->execute();
+    }
+
+
+}//end of parser
 
 /**
  * DTOR
@@ -67,6 +95,8 @@ ReadData::~ReadData() {
     }
 }
 
-const std::vector<vector<string>> &ReadData::getVector() const {
+const std::vector<vector<string>> &
+
+ReadData::getVector() const {
     return this->vec;
 }

@@ -4,10 +4,13 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <thread>
 #include "Client.h"
 #include "Expression.h"
 
 using namespace std;
+
+class ConditionParser;
 
 class Command {
 protected:
@@ -16,10 +19,14 @@ protected:
     map<string, double> *serverMap;
     vector<string> parameters;
     Client *c;
+    vector<thread *> threadsList;
+    ConditionParser *dad;
 
     virtual bool validate(vector<string> s) = 0;
 
 public:
+    bool isDad;
+
     Command(const vector<string> &parameters);
 
     Command();
@@ -27,6 +34,8 @@ public:
     void setParam(vector<string> parameters);
 
     double getFromSymbolTable(string s);
+
+    ConditionParser *getDad();
 
     virtual int execute() = 0;
 };
@@ -60,16 +69,17 @@ private:
 
     int getIndexOfOper(vector<string> s);
 
-    string vectorToString(vector<string> s, int begin, int end);
+    string vectorToString(int begin, int end);
 
 protected:
     vector<Command *> conditionCommandList;
 
 public:
+    ConditionParser();
 
     void addCommand(Command *c);
 
-    bool checkCondition(vector<string> s);
+    bool checkCondition();
 
     virtual int execute() = 0;
 };
@@ -77,6 +87,9 @@ public:
 class LoopCommand : public ConditionParser {
 public:
     int execute() override;
+
+protected:
+    bool validate(vector<string> s) override;
 };
 
 class IfCommand : public ConditionParser {
@@ -89,6 +102,22 @@ private:
 
 public:
     int execute() override;
+};
+
+class PrintCommand : public Command {
+protected:
+    bool validate(vector<string> s) override;
+
+public:
+    int execute() override;
+};
+
+class SleepCommand : public Command {
+public:
+    int execute() override;
+
+protected:
+    bool validate(vector<string> s) override;
 };
 
 #endif //PROJECT_COMMAND_H

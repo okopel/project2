@@ -15,10 +15,13 @@ int ConnectCommand::execute() {
 
         string ip = this->parameters[0];
         int port = stoi(this->parameters[1]);
-        this->c = new Client(ip, port);
-        Client *cl = new Client(ip, port);
+        int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+        thread *client = new thread(Client::connectClient, port, ip, sockfd);
+        this->threadsList.push_back(client);
+        //Client *cl = new Client(ip, port);
         // thread t(cl->connectClient(ref(port),ref(ip)));
-//        thread *treadClient = new thread(this->c->connectClient(),port,ip);
+
+        //thread *treadClient = new thread(new Client(),ip,port);
 
 
         // this->c->connectClient();
@@ -43,7 +46,8 @@ int DefineVarCommand::execute() {
 
     string path = this->parameters[3];
 
-    this->symbolTable[par] = path;
+    //this->symbolTable[par] = path;
+    this->symbolTable.insert(pair<string, string>(par, path));
 //    this->addVar(par, val);
 
 }
@@ -58,23 +62,18 @@ void DefineVarCommand::setVar(string s, double val) {
 }
 */
 bool DefineVarCommand::validate(vector<string> s) {
-    if (s.size() != 2) {
-        return false;
-    }
+
     //todo validate that the args is numbers
     return true;
 }
 
 
 int ConditionParser::execute() {
-    if (!this->checkCondition(this->parameters)) {
+    if (!this->checkCondition()) {
         return 0;
     }
     // ReadData readData;
     // readData.lexer();
-
-
-
 
     for (auto tmp:this->conditionCommandList) {
         tmp->execute();
@@ -87,37 +86,38 @@ void ConditionParser::addCommand(Command *c) {
     this->conditionCommandList.push_back(c);
 }
 
-bool ConditionParser::checkCondition(vector<string> s) {//todo rePharse
+bool ConditionParser::checkCondition() {//todo rePharse
     //delete the "{"
-    if (s[s.size() - 1] == "{") {
-        s.erase(s.end());
+    if (this->parameters[this->parameters.size() - 1] == "{") {
+        this->parameters.erase(this->parameters.end());
     }
-    int index = this->checkCondition(s);
+    int index = getIndexOfOper(this->parameters);
     if (index == -1) {
         throw "not condition operator!";
     }
-    string exp1 = this->vectorToString(s, 0, index);
+    string exp1 = this->vectorToString(0, index);
     ShuntingYard sy1(exp1, this);
     double val1 = sy1.calculate();
-    string exp2 = this->vectorToString(s, index + 1, s.size() - 1);
+    string exp2 = this->vectorToString(index + 1, this->parameters.size() - 1);
     ShuntingYard sy2(exp2, this);
     double val2 = sy2.calculate();
-    if (s[index] == "==") {
+    string type = this->parameters[index];
+    if (type == "==") {
         return val1 == val2;
     }
-    if (s[index] == ">=") {
+    if (type == ">=") {
         return val1 >= val2;
     }
-    if (s[index] == "<=") {
+    if (type == "<=") {
         return val1 <= val2;
     }
-    if (s[index] == "!=") {
+    if (type == "!=") {
         return val1 != val2;
     }
-    if (s[index] == ">") {
+    if (type == ">") {
         return val1 > val2;
     }
-    if (s[index] == "<") {
+    if (type == "<") {
         return val1 < val2;
     } else {
         throw "There isnt eq operator";
@@ -135,21 +135,35 @@ int ConditionParser::getIndexOfOper(vector<string> s) {
     return -1;
 }
 
-string ConditionParser::vectorToString(vector<string> s, int begin, int end) {
+string ConditionParser::vectorToString(int begin, int end) {
     string sub;
     for (int i = begin; i < end; i++) {
-        sub += s[i];
+        sub += this->parameters[i];
     }
     return sub;
 }
 
+vector<string> ConditionParser::rePhrser(vector<string> s) {
+    return vector<string>();
+}
+
+ConditionParser::ConditionParser() : Command() {
+    this->isDad = true;
+    this->dad = nullptr;
+}
+
 
 int LoopCommand::execute() {
-//   while(conditon){
-//       for(auto tmp:this->conditionCommandList){
-//           tmp->execute()
-//       }
-//   }
+    while (this->checkCondition()) {
+        for (auto tmp:this->conditionCommandList) {
+            tmp->execute();
+        }
+    }
+
+}
+
+bool LoopCommand::validate(vector<string> s) {
+    return true;
 }
 
 int IfCommand::execute() {
@@ -182,5 +196,36 @@ void Command::setParam(vector<string> parameters) {
 }
 
 Command::Command() {
+    this->isDad = false;
+    this->dad = nullptr;
+}
 
+ConditionParser *Command::getDad() {
+    return this->dad;
+}
+
+bool PrintCommand::validate(vector<string> s) {
+    return true;
+}
+
+int PrintCommand::execute() {
+    for (auto tmp:this->parameters) {
+        if (tmp[0] == '"') {
+            cout << tmp << endl;
+        } else {
+            cout << this->getFromSymbolTable(tmp) << endl;
+        };
+    }
+
+}
+
+int SleepCommand::execute() {
+    ShuntingYard sy(this->parameters[0], this);
+    double val = sy.calculate();
+    sleep(val);
+    return val;
+}
+
+bool SleepCommand::validate(vector<string> s) {
+    return true;
 }

@@ -16,7 +16,9 @@ int OpenServerCommand::execute() {
 //        thread t(serverSock->openServer());
         map<string, double> &sermap = *this->serverMap;
         thread *openServ = new thread(ServerSock::openServer, (port), (hz), ref(sermap));
-//    openServ.join();
+        this->threadsList.push_back(openServ);
+
+        //openServ->join();
 
 //        t.join();
     } catch (...) {
