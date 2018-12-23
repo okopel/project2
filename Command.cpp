@@ -16,6 +16,7 @@ int ConnectCommand::execute() {
         string ip = this->parameters[0];
         int port = stoi(this->parameters[1]);
         int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+        this->c = new Client(ip, port);//todo!!!! we need ref to client in order to send parameters
         thread *client = new thread(Client::connectClient, port, ip, sockfd);
         this->threadsList.push_back(client);
         //Client *cl = new Client(ip, port);
@@ -225,7 +226,7 @@ int IfCommand::execute() {
     0;
 }
 
-int assingmentCommand::execute() {
+int AssingmentCommand::execute() {
     string varName = this->parameters[0];
     Expression *e = new ShuntingYard(this->parameters[2], this);
     double val = e->calculate();
@@ -233,6 +234,7 @@ int assingmentCommand::execute() {
     string path = this->symbolTable[varName];
     this->c->sendToClient(path, val);
 
+    return val;
 }
 
 double Command::getFromSymbolTable(string s) {
@@ -264,12 +266,16 @@ bool PrintCommand::validate(vector<string> s) {
 }
 
 int PrintCommand::execute() {
+    string buffer;
+
     for (auto tmp:this->parameters) {
-        if (tmp[0] == '"') {
-            cout << tmp << endl;
-        } else {
-            cout << this->getFromSymbolTable(tmp) << endl;
-        };
+        buffer += tmp;
+    }
+    if (buffer[0] == '"') {
+        cout << buffer << endl;
+    } else {
+        ShuntingYard sy(buffer, this);
+        cout << sy.calculate() << endl;
     }
 
 }
@@ -283,4 +289,8 @@ int SleepCommand::execute() {
 
 bool SleepCommand::validate(vector<string> s) {
     return true;
+}
+
+bool AssingmentCommand::validate(vector<string> s) {
+    return false;
 }

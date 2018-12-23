@@ -62,7 +62,11 @@ void ReadData::parser() {
             continue;
         }
         Command *c = this->commandMap[tmp[0]];
-        tmp.erase(tmp.begin());//delete the funcName
+        if (c == nullptr) {
+            c = new AssingmentCommand();
+        } else {
+            tmp.erase(tmp.begin());//delete the funcName
+        }
         c->setParam(tmp);//send parameters
         if (dad != nullptr) {
             dad->addCommand(c);

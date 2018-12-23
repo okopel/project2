@@ -100,8 +100,10 @@ public:
     int execute() override;
 };
 
-class assingmentCommand : public Command {
-private:
+class AssingmentCommand : public Command {
+
+protected:
+    bool validate(vector<string> s) override;
 
 public:
     int execute() override;
