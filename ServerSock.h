@@ -93,30 +93,33 @@ public:
                     segment = "";
                 }
             }
-
-            map["/instrumentation/airspeed-indicator/indicated-speed-kt"] = stod(seglist[0]);
-            map["/instrumentation/altimeter/indicated-altitude-ft"] = stod(seglist[1]);
-            map["/instrumentation/altimeter/pressure-alt-ft"] = stod(seglist[2]);
-            map["/instrumentation/attitude-indicator/indicated-pitch-deg"] = stod(seglist[3]);
-            map["/instrumentation/attitude-indicator/indicated-roll-deg"] = stod(seglist[4]);
-            map["/instrumentation/attitude-indicator/internal-pitch-deg"] = stod(seglist[5]);
-            map["/instrumentation/attitude-indicator/internal-roll-deg"] = stod(seglist[6]);
-            map["/instrumentation/encoder/indicated-altitude-ft"] = stod(seglist[7]);
-            map["/instrumentation/encoder/pressure-alt-ft"] = stod(seglist[8]);
-            map["/instrumentation/gps/indicated-altitude-ft"] = stod(seglist[9]);
-            map["/instrumentation/gps/indicated-ground-speed-kt"] = stod(seglist[10]);
-            map["/instrumentation/gps/indicated-vertical-speed"] = stod(seglist[11]);
-            map["/instrumentation/heading-indicator/indicated-heading-deg"] = stod(seglist[12]);
-            map["/instrumentation/magnetic-compass/indicated-heading-deg"] = stod(seglist[13]);
-            map["/instrumentation/slip-skid-ball/indicated-slip-skid"] = stod(seglist[14]);
-            map["/instrumentation/turn-indicator/indicated-turn-rate"] = stod(seglist[15]);
-            map["/instrumentation/vertical-speed-indicator/indicated-speed-fpm"] = stod(seglist[16]);
-            map["/controls/flight/aileron"] = stod(seglist[17]);
-            map["/controls/flight/elevator"] = stod(seglist[18]);
-            map["/controls/flight/rudder"] = stod(seglist[19]);
-            map["/controls/flight/flaps"] = stod(seglist[20]);
-            map["/controls/engines/engine/throttle"] = stod(seglist[21]);
-            //  map["/engines/engine/rpm"] = stod(seglist[22]);
+            if (seglist.size() >= 22) {
+                map["/instrumentation/airspeed-indicator/indicated-speed-kt"] = stod(seglist[0]);
+                map["/instrumentation/altimeter/indicated-altitude-ft"] = stod(seglist[1]);
+                map["/instrumentation/altimeter/pressure-alt-ft"] = stod(seglist[2]);
+                map["/instrumentation/attitude-indicator/indicated-pitch-deg"] = stod(seglist[3]);
+                map["/instrumentation/attitude-indicator/indicated-roll-deg"] = stod(seglist[4]);
+                map["/instrumentation/attitude-indicator/internal-pitch-deg"] = stod(seglist[5]);
+                map["/instrumentation/attitude-indicator/internal-roll-deg"] = stod(seglist[6]);
+                map["/instrumentation/encoder/indicated-altitude-ft"] = stod(seglist[7]);
+                map["/instrumentation/encoder/pressure-alt-ft"] = stod(seglist[8]);
+                map["/instrumentation/gps/indicated-altitude-ft"] = stod(seglist[9]);
+                map["/instrumentation/gps/indicated-ground-speed-kt"] = stod(seglist[10]);
+                map["/instrumentation/gps/indicated-vertical-speed"] = stod(seglist[11]);
+                map["/instrumentation/heading-indicator/indicated-heading-deg"] = stod(seglist[12]);
+                map["/instrumentation/magnetic-compass/indicated-heading-deg"] = stod(seglist[13]);
+                map["/instrumentation/slip-skid-ball/indicated-slip-skid"] = stod(seglist[14]);
+                map["/instrumentation/turn-indicator/indicated-turn-rate"] = stod(seglist[15]);
+                map["/instrumentation/vertical-speed-indicator/indicated-speed-fpm"] = stod(seglist[16]);
+                map["/controls/flight/aileron"] = stod(seglist[17]);
+                map["/controls/flight/elevator"] = stod(seglist[18]);
+                map["/controls/flight/rudder"] = stod(seglist[19]);
+                map["/controls/flight/flaps"] = stod(seglist[20]);
+                map["/controls/engines/engine/throttle"] = stod(seglist[21]);
+                //  map["/engines/engine/rpm"] = stod(seglist[22]);
+            } else {
+                cout << "the simulator doesn't give 22 args" << endl;
+            }
 //                        printf("Here is the message: %s\n", buffer);
             if (n < 0) {
                 perror("ERROR reading from socket");

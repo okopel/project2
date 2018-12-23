@@ -143,7 +143,7 @@ bool ConditionParser::checkCondition() {//todo rePharse
     if (type == "<") {
         return val1 < val2;
     } else {
-        throw "There isnt eq operator";
+        throw "There isn't eq operator";
     }
 
 }
@@ -252,7 +252,6 @@ int LoopCommand::execute() {
             tmp->execute();
         }
     }
-
 }
 
 bool LoopCommand::validate(vector<string> s) {
