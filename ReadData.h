@@ -21,9 +21,10 @@ class ReadData {
 
 private:
     bool isVarInMap(string s);
+
     vector<vector<string>> vec;
     map<string, Command *> commandMap;
-
+    map<string, string> *mapSymb;
 
 public:
     ReadData(const std::vector<string> &vec);

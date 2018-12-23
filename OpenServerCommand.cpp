@@ -19,7 +19,7 @@ int OpenServerCommand::execute() {
         this->initMap();
         int port = stoi(this->parameters[0]);
         int hz = stoi(this->parameters[1]);
-        ServerSock *serverSock = new ServerSock();
+//        ServerSock *serverSock = new ServerSock();
 //        thread t(serverSock->openServer());
         map<string, double> &sermap = *this->serverMap;
         thread *openServ = new thread(ServerSock::openServer, (port), (hz), ref(sermap));
@@ -64,3 +64,5 @@ void OpenServerCommand::initMap() {
     this->serverMap->insert(pair<string, double>("/controls/engines/engine/throttle", 0));
 
 }
+
+OpenServerCommand::OpenServerCommand(map<string, string> *map) : Command(map) {}

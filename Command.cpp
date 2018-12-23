@@ -22,9 +22,9 @@ int ConnectCommand::execute() {
         string ip = this->parameters[0];
         int port = stoi(this->parameters[1]);
         int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-        this->c = new Client(ip, port);//todo!!!! we need ref to client in order to send parameters
-        thread *client = new thread(Client::connectClient, port, ip, sockfd);
-        this->threadsList.push_back(client);
+        //  this->c = new Client(ip, port);//todo!!!! we need ref to client in order to send parameters
+        // thread *client = new thread(Client::connectClient, port, ip, sockfd);
+        // this->threadsList.push_back(client);
         //Client *cl = new Client(ip, port);
         // thread t(cl->connectClient(ref(port),ref(ip)));
 
@@ -43,18 +43,24 @@ bool ConnectCommand::validate(vector<string> s) {
     return false;
 }
 
+ConnectCommand::ConnectCommand(map<string, string> *map) : Command(map) {}
+
 
 int DefineVarCommand::execute() {
     if (!this->validate(this->parameters)) {
         throw "Error on VarCommand";
     }
     string par = this->parameters[0];
+    string path;
     // ignore "=" "bind"
-
-    string path = this->parameters[3];
+    if (this->parameters[2] == "bind") {
+        path = this->parameters[3];
+    } else {
+        path = this->parameters[2];
+    }
 
     //this->symbolTable[par] = path;
-    this->symbolTable.insert(pair<string, string>(par, path));
+    this->symbolTable->insert(pair<string, string>(par, path));
 //    this->addVar(par, val);
 
 }
@@ -72,6 +78,11 @@ bool DefineVarCommand::validate(vector<string> s) {
 
     //todo validate that the args is numbers
     return true;
+}
+
+DefineVarCommand::DefineVarCommand(map<string, string> *map) : Command(map) {
+    this->isDad = false;
+    this->dad = nullptr;
 }
 
 
@@ -97,7 +108,10 @@ bool ConditionParser::checkCondition() {//todo rePharse
     //delete the "{"
     if (this->parameters[this->parameters.size() - 1] == "{") {
         this->parameters.erase(this->parameters.end());
+        if (this->parameters.size() <= 1)
+            return true;
     }
+
     int index = getIndexOfOper(this->parameters);
     if (index == -1) {
         throw "not condition operator!";
@@ -105,7 +119,7 @@ bool ConditionParser::checkCondition() {//todo rePharse
     string exp1 = this->vectorToString(0, index);
     ShuntingYard sy1(exp1, this);
     double val1 = sy1.calculate();
-    string exp2 = this->vectorToString(index + 1, this->parameters.size() - 1);
+    string exp2 = this->vectorToString(index + 1, this->parameters.size());
     ShuntingYard sy2(exp2, this);
     double val2 = sy2.calculate();
     string type = this->parameters[index];
@@ -184,19 +198,28 @@ vector<string> ConditionParser::rePhrser(vector<string> s) {
             i = tmp.find(",");//split by !=
         }
         if (i != -1) {
-            newS.push_back(tmp.substr(0, i));
-            newS.push_back(tmp[i] + "");
-            newS.push_back(tmp.substr(i + 1));
+            newS.push_back(tmp.substr(0, i + 1));
+            string buf = tmp.substr(i + 1);
+            if (!buf.empty()) {
+                newS.push_back(buf);
+            }
+//            buf = tmp.substr(i + 2);
+//            if (!buf.empty()) {
+//                newS.push_back(buf);
+//            }
             continue;
-        }
 
+        }
+        newS.push_back(tmp);
     }
+    this->parameters = newS;
     return newS;
 }
 
-ConditionParser::ConditionParser() : Command() {
+ConditionParser::ConditionParser(map<string, string> *map) : Command(map) {
     this->isDad = true;
     this->dad = nullptr;
+
 
 }
 
@@ -211,7 +234,8 @@ bool ConditionParser::isNumber(string s) {
 }
 
 void ConditionParser::setParam(vector<string> parameters) {
-    this->parameters = this->rePhrser(parameters);
+//    this->parameters = this->rePhrser(parameters);
+    this->parameters = parameters;
 }
 
 void Command::setDad(ConditionParser *c) {
@@ -232,8 +256,17 @@ bool LoopCommand::validate(vector<string> s) {
     return true;
 }
 
+LoopCommand::LoopCommand(map<string, string> *map) : ConditionParser(map) {}
+
 int IfCommand::execute() {
     0;
+}
+
+bool IfCommand::validate(vector<string> s) {
+    return true;
+}
+
+IfCommand::IfCommand(map<string, string> *map) : ConditionParser(map) {
 }
 
 int AssingmentCommand::execute() {
@@ -241,17 +274,21 @@ int AssingmentCommand::execute() {
     Expression *e = new ShuntingYard(this->parameters[2], this);
     double val = e->calculate();
     delete e;
-    string path = this->symbolTable[varName];
-    this->c->sendToClient(path, val);
+    string path = this->symbolTable->at(varName);
+    // this->c->sendToClient(path, val);//todo!!
     return val;
 }
 
 double Command::getFromSymbolTable(string s) {
-    if (this->symbolTable.count(s) == 0) {
+    if (this->symbolTable->count(s) == 0) {
         throw "Not in Map";
     }
-    string path = this->symbolTable[s];
-    double val = this->serverMap->at(path);
+    string path = this->symbolTable->at(s);
+    double val = 0;
+    if (serverMap != nullptr) {
+        val = this->serverMap->at(path);
+    }
+
     return val;
 }
 
@@ -259,11 +296,13 @@ Command::Command(const vector<string> &parameters) : parameters(parameters) {}
 
 void Command::setParam(vector<string> parameters) {
     this->parameters = parameters;
+
 }
 
-Command::Command() {
+Command::Command(map<string, string> *map) {
     this->isDad = false;
     this->dad = nullptr;
+    this->symbolTable = map;
 }
 
 ConditionParser *Command::getDad() {
@@ -289,6 +328,8 @@ int PrintCommand::execute() {
 
 }
 
+PrintCommand::PrintCommand(map<string, string> *map) : Command(map) {}
+
 int SleepCommand::execute() {
     ShuntingYard sy(this->parameters[0], this);
     double val = sy.calculate();
@@ -300,6 +341,10 @@ bool SleepCommand::validate(vector<string> s) {
     return true;
 }
 
+SleepCommand::SleepCommand(map<string, string> *map) : Command(map) {}
+
 bool AssingmentCommand::validate(vector<string> s) {
     return false;
 }
+
+AssingmentCommand::AssingmentCommand(map<string, string> *map) : Command(map) {}

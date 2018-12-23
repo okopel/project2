@@ -21,7 +21,7 @@ class ConditionParser;
 class Command {
 protected:
     //Command *command;
-    map<string, string> symbolTable;
+    map<string, string> *symbolTable;
     map<string, double> *serverMap;
     vector<string> parameters;
     Client *c;
@@ -37,7 +37,7 @@ public:
 
     void setDad(ConditionParser *c);
 
-    Command();
+    Command(map<string, string> *map);
 
     virtual void setParam(vector<string> parameters);
 
@@ -53,6 +53,7 @@ protected:
     bool validate(vector<string> s) override;
 
 public:
+    ConnectCommand(map<string, string> *map);
 
     int execute() override;
 };
@@ -61,8 +62,9 @@ class DefineVarCommand : public Command {
 protected:
     bool validate(vector<string> s) override;
 
-//private:
 public:
+    DefineVarCommand(map<string, string> *map);
+
     void addVar(string s, double val);
 
     void setVar(string s, double val);
@@ -84,8 +86,7 @@ protected:
     vector<Command *> conditionCommandList;
 
 public:
-    ConditionParser();
-
+    ConditionParser(map<string, string> *map);
 
     void setParam(vector<string> parameters) override;
 
@@ -101,11 +102,21 @@ public:
     int execute() override;
 
 protected:
+public:
+    LoopCommand(map<string, string> *map);
+
+protected:
     bool validate(vector<string> s) override;
 };
 
 class IfCommand : public ConditionParser {
 public:
+protected:
+    bool validate(vector<string> s) override;
+
+public:
+    IfCommand(map<string, string> *map);
+
     int execute() override;
 };
 
@@ -116,6 +127,8 @@ protected:
 
 public:
     int execute() override;
+
+    AssingmentCommand(map<string, string> *map);
 };
 
 class PrintCommand : public Command {
@@ -123,12 +136,18 @@ protected:
     bool validate(vector<string> s) override;
 
 public:
+    PrintCommand(map<string, string> *map);
+
     int execute() override;
 };
 
 class SleepCommand : public Command {
 public:
     int execute() override;
+
+protected:
+public:
+    SleepCommand(map<string, string> *map);
 
 protected:
     bool validate(vector<string> s) override;

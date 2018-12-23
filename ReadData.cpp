@@ -17,13 +17,14 @@
  * Create map command
  */
 ReadData::ReadData() {
-    commandMap.insert(pair<string, Command *>("openDataServer", new OpenServerCommand()));
-    commandMap.insert(pair<string, Command *>("connect", new ConnectCommand()));
-    commandMap.insert(pair<string, Command *>("var", new DefineVarCommand()));
-    commandMap.insert(pair<string, Command *>("while", new LoopCommand()));
-    commandMap.insert(pair<string, Command *>("if", new ConnectCommand()));
-    commandMap.insert(pair<string, Command *>("print", new PrintCommand()));
-    commandMap.insert(pair<string, Command *>("sleep", new SleepCommand()));
+    this->mapSymb = new map<string, string>;
+    commandMap.insert(pair<string, Command *>("openDataServer", new OpenServerCommand(this->mapSymb)));
+    commandMap.insert(pair<string, Command *>("connect", new ConnectCommand(this->mapSymb)));
+    commandMap.insert(pair<string, Command *>("var", new DefineVarCommand(this->mapSymb)));
+    commandMap.insert(pair<string, Command *>("while", new LoopCommand(this->mapSymb)));
+    commandMap.insert(pair<string, Command *>("if", new IfCommand(this->mapSymb)));
+    commandMap.insert(pair<string, Command *>("print", new PrintCommand(this->mapSymb)));
+    commandMap.insert(pair<string, Command *>("sleep", new SleepCommand(this->mapSymb)));
 }
 
 
@@ -66,16 +67,20 @@ void ReadData::parser() {
             }
             continue;
         }
-        Command *c = this->commandMap[tmp[0]];
+        Command *c;
+        if (tmp[0] == "var") {
+            c = new DefineVarCommand(this->mapSymb);
+        } else {
+            c = this->commandMap[tmp[0]];
+        }
         if (c == nullptr) {
-            c = new AssingmentCommand();
+            c = new AssingmentCommand(this->mapSymb);
         } else {
             tmp.erase(tmp.begin());//delete the funcName
         }
         c->setParam(tmp);//send parameters
         if (dad != nullptr) {
             dad->addCommand(c);
-
         } else {
             commandList.push_back(c);
         }

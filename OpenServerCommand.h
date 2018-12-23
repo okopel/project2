@@ -20,6 +20,8 @@ protected:
     void initMap();
 
 public:
+    OpenServerCommand(map<string, string> *map);
+
     int execute() override;
 };
 
