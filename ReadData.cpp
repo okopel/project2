@@ -96,6 +96,21 @@ vector<string> ReadData::arrangeVector(string line) {
     if (!buffer.empty()) {
         vector.push_back(buffer);
     }
+
+    //arange ++ or -- or +- or -+ case
+    for (int i = 0; i < vector.size() - 1; i++) {
+        if ((vector[i] == "-" && vector[i + 1] == "-") || ((vector[i] == "+") && vector[i + 1] == "+")) {
+            vector[i] = "+";
+            vector.erase(vector.begin() + i + 1);
+            i = 0;
+        }
+        if ((vector[i] == "-" && vector[i + 1] == "+") || (vector[i] == "+" && vector[i + 1] == "-")) {
+            vector[i] = "-";
+
+            vector.erase(vector.begin() + i + 1);
+            i = 0;
+        }
+    }
     cout << "after:";
     for (string s:vector) {
         cout << s << "\t";
@@ -118,17 +133,11 @@ void ReadData::lexer(string file) {
     while (!s.empty()) {
         s = "";
         getline(ifs, s);
-        //parse line to words
-//        std::istringstream iss(s);
-//        std::vector<std::string> results(std::istream_iterator<std::string>{iss},
-//                                         std::istream_iterator<std::string>());
         //each line in a node
         if (!s.empty()) {
             this->vec.push_back(this->arrangeVector(s));
         }
     }
-
-//    this->vec = results;
     ifs.close();
 }
 
