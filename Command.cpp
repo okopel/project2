@@ -144,12 +144,62 @@ string ConditionParser::vectorToString(int begin, int end) {
 }
 
 vector<string> ConditionParser::rePhrser(vector<string> s) {
-    return vector<string>();
+    vector<string> newS;
+    for (auto tmp:s) {
+        if (isNumber(tmp)) {
+            newS.push_back(tmp);
+            continue;
+        }
+        int i = -1;
+        if (i == -1) {
+            i = tmp.find("<=");//split by <=
+        }
+        if (i == -1) {
+            i = tmp.find(">=");//split by >=
+        }
+        if (i == -1) {
+            i = tmp.find("==");//split by ==
+        }
+        if (i == -1) {
+            i = tmp.find("!=");//split by !=
+        }
+        if (i != -1) {
+            newS.push_back(tmp.substr(0, i));
+            newS.push_back(tmp.substr(i, i + 1));
+            newS.push_back(tmp.substr(i + 2));
+            continue;
+        }
+        i = tmp.find("<");//split by <
+        if (i == -1) {
+            i = tmp.find(">");//split by !=
+        }
+        if (i == -1) {
+            i = tmp.find(",");//split by !=
+        }
+        if (i != -1) {
+            newS.push_back(tmp.substr(0, i));
+            newS.push_back(tmp[i] + "");
+            newS.push_back(tmp.substr(i + 1));
+            continue;
+        }
+
+    }
+    return newS;
 }
 
 ConditionParser::ConditionParser() : Command() {
     this->isDad = true;
     this->dad = nullptr;
+}
+
+bool ConditionParser::isNumber(string s) {
+    for (char c:s) {
+        if ((!isdigit(c)) && (c != '.')) {
+            return false;
+        }
+    }
+    return true;
+
 }
 
 

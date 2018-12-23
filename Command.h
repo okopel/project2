@@ -64,6 +64,7 @@ public:
 
 class ConditionParser : public Command {
 private:
+    bool isNumber(string s);
 
     vector<string> rePhrser(vector<string> s);
 
