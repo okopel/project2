@@ -38,6 +38,6 @@ bool OpenServerCommand::validate(vector<string> s) {
 }
 
 
-OpenServerCommand::OpenServerCommand(map<string, string> *mapPath, map<string, double> *sMap) : Command(mapPath) {
-    this->serverMap = sMap;
+OpenServerCommand::OpenServerCommand(map<string, string> *mapPath, map<string, double> *server) : Command(mapPath,
+                                                                                                          server) {
 }

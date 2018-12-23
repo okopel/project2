@@ -72,7 +72,7 @@ void ReadData::parser() {
         }
         Command *c;
         if (tmp[0] == "var") {
-            c = new DefineVarCommand(this->mapSymb);
+            c = new DefineVarCommand(this->mapSymb, this->serverMap);
         } else {
             c = this->commandMap[tmp[0]];
         }

@@ -259,7 +259,8 @@ bool LoopCommand::validate(vector<string> s) {
     return true;
 }
 
-LoopCommand::LoopCommand(map<string, string> *map) : ConditionParser(map) {}
+LoopCommand::LoopCommand(map<string, string> *mapPath, map<string, double> *server) : ConditionParser(mapPath,
+                                                                                                      server) {}
 
 int IfCommand::execute() {
     0;
@@ -269,7 +270,7 @@ bool IfCommand::validate(vector<string> s) {
     return true;
 }
 
-IfCommand::IfCommand(map<string, string> *map) : ConditionParser(map) {
+IfCommand::IfCommand(map<string, string> *mapPath, map<string, double> *server) : ConditionParser(mapPath, server) {
 }
 
 int AssingmentCommand::execute() {
@@ -284,6 +285,7 @@ int AssingmentCommand::execute() {
 
 double Command::getFromSymbolTable(string s) {
     if (this->symbolTable->count(s) == 0) {
+        cout << "not in map" << endl;
         throw "Not in Map";
     }
     string path = this->symbolTable->at(s);
@@ -292,6 +294,8 @@ double Command::getFromSymbolTable(string s) {
     }
     double val = 0;
     if (serverMap != nullptr) {
+        //delete the " from start and end
+        path = path.substr(1, path.size() - 2);
         val = this->serverMap->at(path);
     }
 
@@ -334,7 +338,7 @@ int PrintCommand::execute() {
 
 }
 
-PrintCommand::PrintCommand(map<string, string> *map) : Command(map) {}
+PrintCommand::PrintCommand(map<string, string> *mapPath, map<string, double> *server) : Command(mapPath, server) {}
 
 int SleepCommand::execute() {
     ShuntingYard sy(this->parameters[0], this);
@@ -347,12 +351,13 @@ bool SleepCommand::validate(vector<string> s) {
     return true;
 }
 
-SleepCommand::SleepCommand(map<string, string> *map) : Command(map) {}
+SleepCommand::SleepCommand(map<string, string> *mapPath, map<string, double> *server) : Command(mapPath, server) {}
 
 bool AssingmentCommand::validate(vector<string> s) {
     return false;
 }
 
-AssingmentCommand::AssingmentCommand(map<string, string> *mapPath, map<string, double> *server) : Command(mapPath) {
+AssingmentCommand::AssingmentCommand(map<string, string> *mapPath, map<string, double> *server) : Command(mapPath,
+                                                                                                          server) {
     this->serverMap = server;
 }

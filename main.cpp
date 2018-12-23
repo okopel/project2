@@ -11,6 +11,7 @@ int main(int argc, char **argv) {
     x.lexer("data");
     x.parser();
 
-
+    int y;
+    cin >> y;
     return 0;
 }

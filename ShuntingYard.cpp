@@ -42,7 +42,7 @@ ShuntingYard::ShuntingYard(string s, Command *com) {
             buffer += c;
             continue;
         }
-        if (isLetter(c)||(c=='_')) {
+        if (isLetter(c) || (c == '_')) {
             varBuf += c;
             continue;
         } else {
@@ -59,7 +59,7 @@ ShuntingYard::ShuntingYard(string s, Command *com) {
                 if (!this->stack.empty()) {
                     top = this->stack.top();
                     bool pri = this->priority(top[0], c);
-                    while ((!this->stack.empty()) && pri && top[0]!='(') {
+                    while ((!this->stack.empty()) && pri && top[0] != '(') {
                         pri = this->priority(top[0], c);
                         this->queue.push(this->stack.top());
                         this->stack.pop();
@@ -108,10 +108,17 @@ double ShuntingYard::calculate() {
         if (isNumber(queue.front())) {
             nums.push(new Number(queue.front()));
         } else if (isOperator(queue.front()[0])) {
-            Expression *e1 = nums.top();
-            nums.pop();
-            Expression *e2 = nums.top();
-            nums.pop();
+
+            Expression *e1 = new Number(0);
+            if (nums.size() > 0) {
+                e1 = nums.top();
+                nums.pop();
+            }
+            Expression *e2 = new Number(0);
+            if (nums.size() > 0) {
+                e2 = nums.top();
+                nums.pop();
+            }
             nums.push(this->calExp(queue.front()[0], e2, e1));
         }
         queue.pop();

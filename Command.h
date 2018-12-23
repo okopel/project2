@@ -63,7 +63,7 @@ protected:
     bool validate(vector<string> s) override;
 
 public:
-    DefineVarCommand(map<string, string> *map);
+    DefineVarCommand(map<string, string> *mapPath, map<string, double> *server);
 
     void addVar(string s, double val);
 
@@ -103,7 +103,7 @@ public:
 
 protected:
 public:
-    LoopCommand(map<string, string> *map);
+    LoopCommand(map<string, string> *mapPath, map<string, double> *server);
 
 protected:
     bool validate(vector<string> s) override;
@@ -115,7 +115,7 @@ protected:
     bool validate(vector<string> s) override;
 
 public:
-    IfCommand(map<string, string> *map);
+    IfCommand(map<string, string> *mapPath, map<string, double> *server);
 
     int execute() override;
 };
@@ -136,7 +136,7 @@ protected:
     bool validate(vector<string> s) override;
 
 public:
-    PrintCommand(map<string, string> *map);
+    PrintCommand(map<string, string> *mapPath, map<string, double> *server);
 
     int execute() override;
 };
@@ -147,7 +147,7 @@ public:
 
 protected:
 public:
-    SleepCommand(map<string, string> *map);
+    SleepCommand(map<string, string> *mapPath, map<string, double> *server);
 
 protected:
     bool validate(vector<string> s) override;
