@@ -25,9 +25,12 @@ private:
     vector<vector<string>> vec;
     map<string, Command *> commandMap;
     map<string, string> *mapSymb;
+    map<string, double> *serverMap;
+
+    void initMap();
 
 public:
-    ReadData(const std::vector<string> &vec);
+    // ReadData(const std::vector<string> &vec);
 
     ReadData();
 

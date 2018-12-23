@@ -43,7 +43,8 @@ bool ConnectCommand::validate(vector<string> s) {
     return false;
 }
 
-ConnectCommand::ConnectCommand(map<string, string> *map) : Command(map) {}
+ConnectCommand::ConnectCommand(map<string, string> *mapPath, map<string, double> *serverMap) : Command(mapPath,
+                                                                                                       serverMap) {}
 
 
 int DefineVarCommand::execute() {
@@ -80,7 +81,8 @@ bool DefineVarCommand::validate(vector<string> s) {
     return true;
 }
 
-DefineVarCommand::DefineVarCommand(map<string, string> *map) : Command(map) {
+DefineVarCommand::DefineVarCommand(map<string, string> *mapPath, map<string, double> *server) : Command(mapPath,
+                                                                                                        server) {
     this->isDad = false;
     this->dad = nullptr;
 }
@@ -216,7 +218,8 @@ vector<string> ConditionParser::rePhrser(vector<string> s) {
     return newS;
 }
 
-ConditionParser::ConditionParser(map<string, string> *map) : Command(map) {
+ConditionParser::ConditionParser(map<string, string> *mapPath, map<string, double> *serverMap) : Command(mapPath,
+                                                                                                         serverMap) {
     this->isDad = true;
     this->dad = nullptr;
 
@@ -284,6 +287,9 @@ double Command::getFromSymbolTable(string s) {
         throw "Not in Map";
     }
     string path = this->symbolTable->at(s);
+    if (path[0] != '"') {//var case
+        path = this->symbolTable->at(path);
+    }
     double val = 0;
     if (serverMap != nullptr) {
         val = this->serverMap->at(path);
@@ -292,17 +298,17 @@ double Command::getFromSymbolTable(string s) {
     return val;
 }
 
-Command::Command(const vector<string> &parameters) : parameters(parameters) {}
 
 void Command::setParam(vector<string> parameters) {
     this->parameters = parameters;
 
 }
 
-Command::Command(map<string, string> *map) {
+Command::Command(map<string, string> *mapPath, map<string, double> *serverMap) {
     this->isDad = false;
     this->dad = nullptr;
-    this->symbolTable = map;
+    this->symbolTable = mapPath;
+    this->serverMap = serverMap;
 }
 
 ConditionParser *Command::getDad() {
@@ -347,4 +353,6 @@ bool AssingmentCommand::validate(vector<string> s) {
     return false;
 }
 
-AssingmentCommand::AssingmentCommand(map<string, string> *map) : Command(map) {}
+AssingmentCommand::AssingmentCommand(map<string, string> *mapPath, map<string, double> *server) : Command(mapPath) {
+    this->serverMap = server;
+}

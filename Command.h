@@ -33,11 +33,11 @@ protected:
 public:
     bool isDad;
 
-    Command(const vector<string> &parameters);
+//    Command(const vector<string> &parameters);
 
     void setDad(ConditionParser *c);
 
-    Command(map<string, string> *map);
+    Command(map<string, string> *mapPath, map<string, double> *serverMap);
 
     virtual void setParam(vector<string> parameters);
 
@@ -53,7 +53,7 @@ protected:
     bool validate(vector<string> s) override;
 
 public:
-    ConnectCommand(map<string, string> *map);
+    ConnectCommand(map<string, string> *mapPath, map<string, double> *serverMap);
 
     int execute() override;
 };
@@ -86,7 +86,7 @@ protected:
     vector<Command *> conditionCommandList;
 
 public:
-    ConditionParser(map<string, string> *map);
+    ConditionParser(map<string, string> *mapPath, map<string, double> *serverMap);
 
     void setParam(vector<string> parameters) override;
 
@@ -128,7 +128,7 @@ protected:
 public:
     int execute() override;
 
-    AssingmentCommand(map<string, string> *map);
+    AssingmentCommand(map<string, string> *mapPath, map<string, double> *serverMap);
 };
 
 class PrintCommand : public Command {

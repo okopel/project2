@@ -16,7 +16,6 @@ using namespace std;
 
 int OpenServerCommand::execute() {
     try {
-        this->initMap();
         int port = stoi(this->parameters[0]);
         int hz = stoi(this->parameters[1]);
 //        ServerSock *serverSock = new ServerSock();
@@ -38,31 +37,7 @@ bool OpenServerCommand::validate(vector<string> s) {
     return false;//todo
 }
 
-void OpenServerCommand::initMap() {
-    this->serverMap = new map<string, double>();
-    this->serverMap->insert(pair<string, double>("/instrumentation/airspeed-indicator/indicated-speed-kt", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/altimeter/indicated-altitude-ft", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/altimeter/pressure-alt-ft", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/indicated-pitch-deg", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/indicated-roll-deg", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/internal-pitch-deg", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/internal-roll-deg", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/encoder/indicated-altitude-ft", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/encoder/pressure-alt-ft", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/gps/indicated-altitude-ft", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/gps/indicated-ground-speed-kt", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/gps/indicated-vertical-speed", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/heading-indicator/indicated-heading-deg", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/magnetic-compass/indicated-heading-deg", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/slip-skid-ball/indicated-slip-skid", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/turn-indicator/indicated-turn-rate", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/vertical-speed-indicator/indicated-speed-fpm", 0));
-    this->serverMap->insert(pair<string, double>("/controls/flight/aileron", 0));
-    this->serverMap->insert(pair<string, double>("/controls/flight/elevator", 0));
-    this->serverMap->insert(pair<string, double>("/controls/flight/rudder", 0));
-    this->serverMap->insert(pair<string, double>("/controls/flight/flaps", 0));
-    this->serverMap->insert(pair<string, double>("/controls/engines/engine/throttle", 0));
 
+OpenServerCommand::OpenServerCommand(map<string, string> *mapPath, map<string, double> *sMap) : Command(mapPath) {
+    this->serverMap = sMap;
 }
-
-OpenServerCommand::OpenServerCommand(map<string, string> *map) : Command(map) {}

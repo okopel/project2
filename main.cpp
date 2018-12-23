@@ -7,6 +7,7 @@ int main(int argc, char **argv) {
 
 
     ReadData x;
+
     x.lexer("data");
     x.parser();
 
