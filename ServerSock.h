@@ -29,15 +29,11 @@ public:
     void static
     openServer(int portNumber, int myHz, DoubleMap &pathMapServer, map<string, double> *valMapServer) {
         cout << "try to connect.." << endl;
-
-        int sockfd, newsockfd, clilen;
+        int sockfd, newsockfd, clilen, n;
         char buffer[256];
         struct sockaddr_in serv_addr, cli_addr;
-        int n;
-
         /* First call to socket() function */
         sockfd = socket(AF_INET, SOCK_STREAM, 0);
-
         if (sockfd < 0) {
             perror("ERROR opening socket");
             exit(1);
@@ -94,15 +90,29 @@ public:
                                  "/controls/flight/flaps",
                                  "/controls/engines/current-engine/throttle"
         };
+        string nextBuf;
+        bool flash = false;
         /* If connection is established then start communicating */
         while (true) {
             this_thread::sleep_for(0.1s);
             bzero(buffer, 256);
             n = read(newsockfd, buffer, 255);
+            //n = recv(newsockfd, buffer, 255, MSG_PEEK);
+            string conectedBuffer = nextBuf + buffer;
+            nextBuf = "";
             std::string segment;
             std::vector<std::string> seglist;
-            for (char c:buffer) {
-                if ((c != ',') && (c != '\n')) {
+            flash = false;
+            for (auto c:conectedBuffer) {
+                if (c == '\n') {
+                    flash = true;
+                    continue;
+                }
+                if (flash) {
+                    nextBuf += c;
+                    continue;
+                }
+                if (c != ',') {
                     segment += c;
                 } else {
                     seglist.push_back(segment);
@@ -112,15 +122,19 @@ public:
             if (!segment.empty()) {
                 seglist.push_back(segment);
             }
-//            cout<<pathes[1]<<"  "<<pathMapServer.getVar(pathes[1])<< "  "<<seglist[1]<<endl;
             for (int i = 0; i < min(pathes.size(), seglist.size()); i++) {
                 string var = pathMapServer.getVar(pathes[i]);
                 if (var == "") {
                     continue;
                 }
-                //  locker.lock();
-                valMapServer->at(var) = stod(seglist[i]);
-                //   locker.unlock();
+                cout << var << ":" << stod(seglist[i]) << endl;
+                if (var == "alt") {
+                    cout << "alt:" << stod(seglist[i]);
+
+                }
+                locker.lock();
+                valMapServer->at(var) = stod(seglist[i]); //todo arrange the SHEERIOT
+                locker.unlock();
             }
         }
     }

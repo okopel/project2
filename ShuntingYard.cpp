@@ -49,7 +49,6 @@ ShuntingYard::ShuntingYard(string s, Command *com) {
         } else {
             if (!varBuf.empty()) {
                 string tmp = to_string(this->command->getFromSymbolTable(varBuf));
-//                cout << varBuf << " tmp:" << tmp << endl;
                 if (tmp[0] == '-') {
                     this->stack.push("-");
                     tmp = tmp.substr(1, tmp.size() - 1);
@@ -95,7 +94,6 @@ ShuntingYard::ShuntingYard(string s, Command *com) {
     }
     if (!varBuf.empty()) {
         string tmp = to_string(this->command->getFromSymbolTable(varBuf));
-        // cout << varBuf << " tmp:" << tmp << endl;
         if (tmp[0] == '-') {
             this->stack.push("-");
             tmp = tmp.substr(1, tmp.size() - 1);
