@@ -27,7 +27,7 @@
 class ServerSock : public OpenServerCommand {
 public:
     void static
-    openServer(int portNumber, int myHz, DoubleMap &pathMapServer, map<string, double> &valMapServer) {
+    openServer(int portNumber, int myHz, DoubleMap &pathMapServer, map<string, double> *valMapServer) {
         cout << "try to connect.." << endl;
 
         int sockfd, newsockfd, clilen;
@@ -109,15 +109,18 @@ public:
                     segment = "";
                 }
             }
+            if (!segment.empty()) {
+                seglist.push_back(segment);
+            }
 //            cout<<pathes[1]<<"  "<<pathMapServer.getVar(pathes[1])<< "  "<<seglist[1]<<endl;
             for (int i = 0; i < min(pathes.size(), seglist.size()); i++) {
                 string var = pathMapServer.getVar(pathes[i]);
                 if (var == "") {
                     continue;
                 }
-                // locker.lock();
-                valMapServer.at(var) = stod(seglist[i]);
-                // locker.unlock();
+                //  locker.lock();
+                valMapServer->at(var) = stod(seglist[i]);
+                //   locker.unlock();
             }
         }
     }

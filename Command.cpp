@@ -7,7 +7,6 @@
 
 #include "Command.h"
 #include "ServerSock.h"
-#include "ShuntingYard.h"
 #include "Client.h"
 
 using namespace std;
@@ -349,12 +348,14 @@ void PrintCommand::execute() {
         buffer = buffer.substr(1, buffer.size() - 2);
         //print the string
         cout << buffer << endl;
-        // if num - calc & print
-    } else {
-        ShuntingYard sy(buffer, this);
-        //print the value of the var
-        cout << sy.calculate() << endl;
+        return;
     }
+    // if num - calc & print
+    //cout << "BUF:" << buffer << endl;
+    ShuntingYard sy(buffer, this);
+    //print the value of the var
+    cout << sy.calculate() << endl;
+
 }
 
 PrintCommand::PrintCommand(DoubleMap *mapPath, map<string, double> *server) : Command(mapPath, server) {}

@@ -7,12 +7,10 @@
 
 #include <iostream>
 #include "ReadData.h"
-#include "ShuntingYard.h"
-#include <list>
 
 int main(int argc, char **argv) {
     ReadData x;
-    /**
+    /*
      * check if there is one word input, so its fileName
      */
     if (argc == 2) {
@@ -33,4 +31,5 @@ int main(int argc, char **argv) {
      */
     x.parser();
     cout << endl << "ByeBye! Nice to meet you" << endl;
+
 }

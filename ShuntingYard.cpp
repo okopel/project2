@@ -6,7 +6,6 @@
  ******************************/
 
 #include <iostream>
-#include <string>
 #include "ShuntingYard.h"
 
 using namespace std;
@@ -49,7 +48,13 @@ ShuntingYard::ShuntingYard(string s, Command *com) {
             continue;
         } else {
             if (!varBuf.empty()) {
-                this->queue.push(to_string(this->command->getFromSymbolTable(varBuf)));
+                string tmp = to_string(this->command->getFromSymbolTable(varBuf));
+//                cout << varBuf << " tmp:" << tmp << endl;
+                if (tmp[0] == '-') {
+                    this->stack.push("-");
+                    tmp = tmp.substr(1, tmp.size() - 1);
+                }
+                this->queue.push(tmp);
                 varBuf = "";
             }
             if (!buffer.empty()) {
@@ -65,10 +70,8 @@ ShuntingYard::ShuntingYard(string s, Command *com) {
                         pri = this->priority(top[0], c);
                         this->queue.push(this->stack.top());
                         this->stack.pop();
-
                     }
                     this->stack.push(this->charToString(c));
-
                 } else {
                     this->stack.push(this->charToString(c));
                 }
@@ -91,15 +94,19 @@ ShuntingYard::ShuntingYard(string s, Command *com) {
         this->stack.push(buffer);
     }
     if (!varBuf.empty()) {
-        this->stack.push(to_string(this->command->getFromSymbolTable(varBuf)));
+        string tmp = to_string(this->command->getFromSymbolTable(varBuf));
+        // cout << varBuf << " tmp:" << tmp << endl;
+        if (tmp[0] == '-') {
+            this->stack.push("-");
+            tmp = tmp.substr(1, tmp.size() - 1);
+        }
+        this->queue.push(tmp);
     }
     //move to the queue
     while (!this->stack.empty()) {
         this->queue.push(this->stack.top());
         this->stack.pop();
     }
-
-
 }
 
 double ShuntingYard::calculate() {

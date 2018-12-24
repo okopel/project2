@@ -20,7 +20,7 @@
 #include "Global.h"
 
 string msgToServer;
-
+mutex clientLocker;
 /**
  * send message to simulator
  * @param address - path of var to set
@@ -28,9 +28,9 @@ string msgToServer;
  */
 void sendToClient(const string address, double val) {
 //        if(!valifation()){throw..}
-    locker.lock();
+    clientLocker.lock();
     msgToServer = "set " + address + " " + to_string(val) + "\r\n";
-    locker.unlock();
+    clientLocker.unlock();
 }
 
 /**
@@ -77,9 +77,9 @@ void ConnectClient(int portNumber, string ipPath) {
             const char *c = msgToServer.c_str();
             //n = write(sockfd, c, strlen(buffer));
             n = send(sockfd, c, strlen(buffer), MSG_EOR);//todo MSG_OOB?
-            locker.lock();
+            clientLocker.lock();
             msgToServer = "";
-            locker.unlock();
+            clientLocker.unlock();
         }
         if (n < 0) {
             perror("ERROR writing to socket");

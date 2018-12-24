@@ -23,7 +23,7 @@ ReadData::ReadData() {
 
 void ReadData::initServerMap() {
     this->serverMap->insert(pair<string, double>("/instrumentation/airspeed-indicator/indicated-speed-kt", 0));
-    this->serverMap->insert(pair<string, double>("/instrumentation/altimeter/indicated-altitude-ft", 0));
+    this->serverMap->insert(pair<string, double>("/instrumentation/altimeter/indicated-altitude-ft", 555));
     this->serverMap->insert(pair<string, double>("/instrumentation/altimeter/pressure-alt-ft", 0));
     this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/indicated-pitch-deg", 0));
     this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/indicated-roll-deg", 0));
