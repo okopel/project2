@@ -15,7 +15,7 @@
 
 using namespace std;
 
-int OpenServerCommand::execute() {
+void OpenServerCommand::execute() {
     try {
         int index = this->getIndexOfDelimiter();
         if (index == -1) {
@@ -42,7 +42,6 @@ int OpenServerCommand::execute() {
     } catch (...) {
         throw "Error in openServer";
     }
-    return 1;
 }
 
 bool OpenServerCommand::validate(vector<string> s) {

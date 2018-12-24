@@ -28,7 +28,6 @@ private:
 
     bool isPar(char c);
 
-    vector<string> arrangeVector(string line);
 
     vector<vector<string>> vec;
     map<string, Command *> commandMap;
@@ -39,6 +38,9 @@ private:
 
 public:
     // ReadData(const std::vector<string> &vec);
+    vector<string> arrangeVector(string line);
+
+    void setVec(const vector<vector<string>> &vec);
 
     ReadData();
 

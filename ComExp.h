@@ -11,6 +11,10 @@
 #include "Expression.h"
 #include "Command.h"
 
+/**
+ * this class is using Adapter pattern
+ * adapt command as expression
+ */
 class ComExp : public Expression {
 protected:
     Command *c;

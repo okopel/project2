@@ -20,7 +20,7 @@ protected:
 public:
     OpenServerCommand(map<string, string> *mapPath, map<string, double> *serverMap);
 
-    int execute() override;
+    void execute() override;
 };
 
 

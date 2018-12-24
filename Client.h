@@ -19,14 +19,24 @@
 
 string msgToServer;
 
+/**
+ * send message to simulator
+ * @param address - path of var to set
+ * @param val - new value
+ */
 void sendToClient(const string address, double val) {
 //        if(!valifation()){throw..}
     msgToServer = "set " + address + " " + to_string(val) + "\r\n";
-
 }
 
+/**
+ * Connect to client.
+ * @param portNumber
+ * @param ipPath
+ */
 void ConnectClient(int portNumber, string ipPath) {
     int waiter;
+    // ask char to continue
     cout << "enter Num to continue" << endl;
     cin >> waiter;
     cout << "client started" << endl;

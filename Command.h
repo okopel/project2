@@ -18,44 +18,88 @@ using namespace std;
 class ConditionParser;
 
 //todo Var y = bind x
+/**
+ * command interface
+ * command is a mission to execute
+ */
 class Command {
 
 protected:
-    //map<string, string> *symbolTable;
-    //map<string, double> *serverMap;
     map<string, string> *pathMap;
     map<string, double> *valMap;
     vector<string> parameters;
     vector<thread *> threadsList;
     ConditionParser *dad;
 
+    /**
+     * valid func
+     * @param s number
+     * @return if is number
+     */
     bool isNumber(string s);
 
+    /**
+     * valid func
+     * @param s operator
+     * @return if is operator
+     */
     bool isOperator(string s);
 
-
+    /**
+     * find index of ','
+     * @return index
+     */
     int getIndexOfDelimiter();
 
+    /**
+     * validation function
+     * @param s vector of params to command
+     * @return true for valid, otherwise false
+     */
     virtual bool validate(vector<string> s) = 0;
 
 public:
+    /**
+     * check if this command is in block
+     */
     bool isDad;
-
-//    Command(const vector<string> &parameters);
 
     void setDad(ConditionParser *c);
 
+    /**
+     * CTOR
+     * @param mapPath map: var to its path
+     * @param serverMap map: var to its value
+     */
     Command(map<string, string> *mapPath, map<string, double> *serverMap);
 
+    /**
+     * set command parameters
+     * @param parameters
+     */
     virtual void setParam(vector<string> parameters);
 
+    /**
+     * using map
+     * @param s var
+     * @return its value
+     */
     double getFromSymbolTable(string s);
 
+    /**
+     * @return  if this command is in block
+     */
     ConditionParser *getDad();
 
-    virtual int execute() = 0;
+    /**
+     * execute the command
+     */
+    virtual void execute() = 0;
 };
 
+/**
+ * command: connect as client to simulator
+ */
 class ConnectCommand : public Command {
 protected:
     bool validate(vector<string> s) override;
@@ -63,9 +107,14 @@ protected:
 public:
     ConnectCommand(map<string, string> *mapPath, map<string, double> *serverMap);
 
-    int execute() override;
+    void execute() override;
 };
 
+/**
+ * command: define new var
+ * bind new var to simulator values by givven path
+ * or init var value
+ */
 class DefineVarCommand : public Command {
 protected:
     bool validate(vector<string> s) override;
@@ -73,40 +122,82 @@ protected:
 public:
     DefineVarCommand(map<string, string> *mapPath, map<string, double> *server);
 
+    /**
+     * save data about new var
+     * @param s name
+     * @param val value
+     */
     void addVar(string s, double val);
 
     void setVar(string s, double val);
 
-    int execute() override;
+    void execute() override;
 };
 
+/**
+ * command: check condition before block (if / while)
+ */
 class ConditionParser : public Command {
 private:
-
+    /**
+     * parse condition to vector
+     * @param s condition as string
+     * @return ordered vector
+     */
     vector<string> rePhrser(vector<string> s);
 
+    /**
+     * find boolean operator index in condition
+     * @param s vector
+     * @return index
+     */
     int getIndexOfOper(vector<string> s);
 
+    /**
+     * cast vector to string, cut vec by 2 indexes
+     * @param begin index
+     * @param end index
+     * @return cutted string
+     */
     string vectorToString(int begin, int end);
 
 protected:
+    /**
+     * vec of all commands in block under condition
+     */
     vector<Command *> conditionCommandList;
 
 public:
+    /**
+     * CTOR
+     * @param mapPath map: var name to its path
+     * @param serverMap map: var name to its value
+     */
     ConditionParser(map<string, string> *mapPath, map<string, double> *serverMap);
 
     void setParam(vector<string> parameters) override;
 
+    /**
+     * add command to vec
+     * @param c pointer to command
+     */
     void addCommand(Command *c);
 
+    /**
+     * calc the condition
+     * @return if condition is true
+     */
     bool checkCondition();
 
-    virtual int execute() = 0;
+    virtual void execute() = 0;
 };
 
+/**
+ * command: while loop of commands
+ */
 class LoopCommand : public ConditionParser {
 public:
-    int execute() override;
+    void execute() override;
 
 protected:
 public:
@@ -116,6 +207,9 @@ protected:
     bool validate(vector<string> s) override;
 };
 
+/**
+ * command: if block of commands
+ */
 class IfCommand : public ConditionParser {
 public:
 protected:
@@ -124,20 +218,28 @@ protected:
 public:
     IfCommand(map<string, string> *mapPath, map<string, double> *server);
 
-    int execute() override;
+    void execute() override;
 };
 
+/**
+ * command: assigment
+ * set value of one var
+ * this command connect to simulator and set var
+ */
 class AssingmentCommand : public Command {
 
 protected:
     bool validate(vector<string> s) override;
 
 public:
-    int execute() override;
+    void execute() override;
 
     AssingmentCommand(map<string, string> *mapPath, map<string, double> *serverMap);
 };
 
+/**
+ * command: print to monitor
+ */
 class PrintCommand : public Command {
 protected:
     bool validate(vector<string> s) override;
@@ -145,12 +247,15 @@ protected:
 public:
     PrintCommand(map<string, string> *mapPath, map<string, double> *server);
 
-    int execute() override;
+    void execute() override;
 };
 
+/**
+ * commamd: sleep for x seconds
+ */
 class SleepCommand : public Command {
 public:
-    int execute() override;
+    void execute() override;
 
 protected:
 public:

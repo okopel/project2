@@ -222,3 +222,7 @@ bool ReadData::isBoolOperator(char c) {
 bool ReadData::isPar(char c) {
     return (c == ')' || c == '(' || c == '{' || c == '}');
 }
+
+void ReadData::setVec(const vector<vector<string>> &vec) {
+    ReadData::vec = vec;
+}
