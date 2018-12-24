@@ -8,11 +8,6 @@
 #include "Command.h"
 #include "ServerSock.h"
 #include "ShuntingYard.h"
-#include "ReadData.h"
-#include <stdio.h>
-#include <iostream>
-#include <thread>
-#include <functional>
 #include "Client.h"
 
 using namespace std;

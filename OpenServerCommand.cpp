@@ -5,12 +5,7 @@
  * December 18
  ******************************/
 
-#include "OpenServerCommand.h"
-#include <bits/locale_facets.tcc>
 #include "ServerSock.h"
-#include <string>
-#include <string.h>
-#include <thread>
 #include "ShuntingYard.h"
 
 using namespace std;

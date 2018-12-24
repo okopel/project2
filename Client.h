@@ -17,6 +17,7 @@
 #include <string.h>
 #include <string>
 #include <mutex>
+#include "Global.h"
 
 string msgToServer;
 
@@ -27,10 +28,9 @@ string msgToServer;
  */
 void sendToClient(const string address, double val) {
 //        if(!valifation()){throw..}
-    mutex m;
-    m.lock();
+    locker.lock();
     msgToServer = "set " + address + " " + to_string(val) + "\r\n";
-    m.unlock();
+    locker.unlock();
 }
 
 /**
@@ -39,7 +39,6 @@ void sendToClient(const string address, double val) {
  * @param ipPath
  */
 void ConnectClient(int portNumber, string ipPath) {
-    mutex m;
     cout << "client started" << endl;
     int n, sockfd;
     struct sockaddr_in serv_addr;
@@ -78,9 +77,9 @@ void ConnectClient(int portNumber, string ipPath) {
             const char *c = msgToServer.c_str();
             //n = write(sockfd, c, strlen(buffer));
             n = send(sockfd, c, strlen(buffer), MSG_EOR);//todo MSG_OOB?
-            m.lock();
+            locker.lock();
             msgToServer = "";
-            m.unlock();
+            locker.unlock();
         }
         if (n < 0) {
             perror("ERROR writing to socket");

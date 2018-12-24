@@ -21,14 +21,15 @@
 #include <map>
 #include <chrono>
 #include "OpenServerCommand.h"
-
+#include "Global.h"
+#include "ServerSock.h"
 
 class ServerSock : public OpenServerCommand {
 public:
     void static
     openServer(int portNumber, int myHz, DoubleMap &pathMapServer, map<string, double> &valMapServer) {
         cout << "try to connect.." << endl;
-        mutex mtx;
+
         int sockfd, newsockfd, clilen;
         char buffer[256];
         struct sockaddr_in serv_addr, cli_addr;
@@ -114,9 +115,9 @@ public:
                 if (var == "") {
                     continue;
                 }
-                mtx.lock();
+                // locker.lock();
                 valMapServer.at(var) = stod(seglist[i]);
-                mtx.unlock();
+                // locker.unlock();
             }
         }
     }

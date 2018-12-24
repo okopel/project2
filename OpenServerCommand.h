@@ -10,6 +10,7 @@
 #define PROJECT_OPENSERVERCOMMAND_H
 
 #include "Command.h"
+#include "ShuntingYard.h"
 #include <stdio.h>
 #include <string>
 

@@ -18,6 +18,7 @@ using namespace std;
 #include "Command.h"
 #include "DoubleMap.h"
 
+
 class ReadData {
 
 private:
@@ -28,7 +29,9 @@ private:
     bool isBoolOperator(char c);
 
     bool isPar(char c);
+
     void initServerMap();
+
     vector<vector<string>> vec;
     map<string, Command *> commandMap;
     DoubleMap *pathVarMap;
