@@ -40,10 +40,6 @@ void sendToClient(const string address, double val) {
  */
 void ConnectClient(int portNumber, string ipPath) {
     mutex m;
-    int waiter;
-    // ask char to continue
-    cout << "enter Num to continue" << endl;
-    cin >> waiter;
     cout << "client started" << endl;
     int n, sockfd;
     struct sockaddr_in serv_addr;

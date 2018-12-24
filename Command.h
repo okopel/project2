@@ -115,6 +115,19 @@ public:
 };
 
 /**
+ * Waiter untill the simulator will work
+ */
+class EnterCCommand : public Command {
+public:
+    void execute() override;
+
+    EnterCCommand(DoubleMap *mapPath, map<string, double> *serverMap);
+
+protected:
+    bool validate(vector<string> s) override;
+};
+
+/**
  * command: define new var
  * bind new var to simulator values by givven path
  * or init var value

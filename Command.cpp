@@ -185,58 +185,6 @@ string ConditionParser::vectorToString(int begin, int end) {
     }
     return sub;
 }
-//
-//vector<string> ConditionParser::rePhrser(vector<string> s) {
-//    vector<string> newS;
-//    for (auto tmp:s) {
-//        if (isNumber(tmp)) {
-//            newS.push_back(tmp);
-//            continue;
-//        }
-//        int i = -1;
-//        if (i == -1) {
-//            i = tmp.find("<=");//split by <=
-//        }
-//        if (i == -1) {
-//            i = tmp.find(">=");//split by >=
-//        }
-//        if (i == -1) {
-//            i = tmp.find("==");//split by ==
-//        }
-//        if (i == -1) {
-//            i = tmp.find("!=");//split by !=
-//        }
-//        if (i != -1) {
-//            newS.push_back(tmp.substr(0, i));
-//            newS.push_back(tmp.substr(i, i + 1));
-//            newS.push_back(tmp.substr(i + 2));
-//            continue;
-//        }
-//        i = tmp.find("<");//split by <
-//        if (i == -1) {
-//            i = tmp.find(">");//split by !=
-//        }
-//        if (i == -1) {
-//            i = tmp.find(",");//split by !=
-//        }
-//        if (i != -1) {
-//            newS.push_back(tmp.substr(0, i + 1));
-//            string buf = tmp.substr(i + 1);
-//            if (!buf.empty()) {
-//                newS.push_back(buf);
-//            }
-//            buf = tmp.substr(i + 2);
-//            if (!buf.empty()) {
-//                newS.push_back(buf);
-//            }
-//            continue;
-//
-//        }
-//        newS.push_back(tmp);
-//    }
-//    this->parameters = newS;
-//    return newS;
-//}
 
 ConditionParser::ConditionParser(DoubleMap *mapPath, map<string, double> *serverMap) : Command(mapPath,
                                                                                                serverMap) {
@@ -271,6 +219,7 @@ void LoopCommand::execute() {
             tmp->execute();
         }
     }
+    cout << "x";
 }
 
 bool LoopCommand::validate(vector<string> s) {
@@ -385,8 +334,8 @@ bool Command::isOperator(string s) {
 }
 
 Command::~Command() {
-    for (auto &v:this->threadsList) {//todo
-        delete v;
+    for (thread *t:this->threadsList) {
+        delete t;
     }
 }
 
@@ -406,13 +355,14 @@ void PrintCommand::execute() {
     // if string - print it
     if (buffer[0] == '"') {
         buffer = buffer.substr(1, buffer.size() - 2);
+        //print the string
         cout << buffer << endl;
         // if num - calc & print
     } else {
         ShuntingYard sy(buffer, this);
+        //print the value of the var
         cout << sy.calculate() << endl;
     }
-
 }
 
 PrintCommand::PrintCommand(DoubleMap *mapPath, map<string, double> *server) : Command(mapPath, server) {}
@@ -428,7 +378,7 @@ void SleepCommand::execute() {
     ShuntingYard sy(buffer, this);
     // calc num of seconds
     double val = sy.calculate();
-    sleep(val);
+    usleep(val);
 }
 
 bool SleepCommand::validate(vector<string> s) {
@@ -446,3 +396,13 @@ bool AssingmentCommand::validate(vector<string> s) {
 AssingmentCommand::AssingmentCommand(DoubleMap *mapPath, map<string, double> *server) : Command(mapPath,
                                                                                                 server) {
 }
+
+bool EnterCCommand::validate(vector<string> s) {
+    return true;
+}
+
+void EnterCCommand::execute() {
+    getchar();
+}
+
+EnterCCommand::EnterCCommand(DoubleMap *mapPath, map<string, double> *serverMap) : Command(mapPath, serverMap) {}

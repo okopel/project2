@@ -170,8 +170,10 @@ void ReadData::parser() {
         if (tmp.size() <= 1) {
             if (tmp.size() == 1 && tmp[0] == "}") {
                 dad = dad->getDad();
+                continue;
+            } else if (tmp.size() == 0) {
+                continue;
             }
-            continue;
         }
         Command *c = nullptr;
         if (tmp[0] == "var") {
@@ -188,6 +190,8 @@ void ReadData::parser() {
             c = new OpenServerCommand(this->pathVarMap, this->serverMap);
         } else if (tmp[0] == "connect") {
             c = new ConnectCommand(this->pathVarMap, this->serverMap);
+        } else if (tmp[0] == "enterc" || tmp[0] == "Enterc") {
+            c = new EnterCCommand(this->pathVarMap, this->serverMap);
         }
         if (c == nullptr) {
             c = new AssingmentCommand(this->pathVarMap, this->serverMap);

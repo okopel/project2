@@ -33,8 +33,4 @@ int main(int argc, char **argv) {
      */
     x.parser();
     cout << endl << "ByeBye! Nice to meet you" << endl;
-
-    int y;
-    cin >> y;
-    return 0;
 }

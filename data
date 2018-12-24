@@ -1,4 +1,5 @@
 openDataServer 5400 10
+enterc
 connect 127.0.0.1 5402
 var breaks = bind "/controls/flight/speedbrake"
 var throttle = bind "/controls/engines/engine/throttle"
@@ -14,7 +15,7 @@ breaks = 0
 throttle = 1
 var h = heading
 while alt < 1000 {
-rudder = (h – heading)/20
+rudder = (h - heading)/20
 aileron = - roll / 70
 elevator = pitch / 50
 print alt
