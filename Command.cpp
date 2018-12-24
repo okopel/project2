@@ -42,8 +42,8 @@ bool ConnectCommand::validate(vector<string> s) {
     return false;
 }
 
-ConnectCommand::ConnectCommand(map<string, string> *mapPath, map<string, double> *serverMap) : Command(mapPath,
-                                                                                                       serverMap) {}
+ConnectCommand::ConnectCommand(DoubleMap *mapPath, map<string, double> *serverMap) : Command(mapPath,
+                                                                                             serverMap) {}
 
 /**
  * define new var, bind it or initial its value
@@ -60,11 +60,15 @@ void DefineVarCommand::execute() {
     // ignore "=" "bind"
     if (this->parameters[2] == "bind") {
         path = this->parameters[3];
+        //get var name (no path)
         if (path[0] != '"') {
-            path = this->pathMap->at(path);
+            //get the path of the other var
+            path = this->pathMap->getPath(path);
+//            path = this->pathMap->at(path);
         }
         // update path map
-        this->pathMap->insert(pair<string, string>(var, path));
+        //this->pathMap->insert(pair<string, string>(var, path));
+        this->pathMap->addArg(var, path); // todo if there are 2 arg
         // not bind
     } else {
         string tmp = "";
@@ -90,8 +94,8 @@ bool DefineVarCommand::validate(vector<string> s) {
  * @param mapPath map for path
  * @param server map for value
  */
-DefineVarCommand::DefineVarCommand(map<string, string> *mapPath, map<string, double> *server) : Command(mapPath,
-                                                                                                        server) {
+DefineVarCommand::DefineVarCommand(DoubleMap *mapPath, map<string, double> *server) : Command(mapPath,
+                                                                                              server) {
     this->isDad = false;
     this->dad = nullptr;
 }
@@ -234,8 +238,8 @@ string ConditionParser::vectorToString(int begin, int end) {
 //    return newS;
 //}
 
-ConditionParser::ConditionParser(map<string, string> *mapPath, map<string, double> *serverMap) : Command(mapPath,
-                                                                                                         serverMap) {
+ConditionParser::ConditionParser(DoubleMap *mapPath, map<string, double> *serverMap) : Command(mapPath,
+                                                                                               serverMap) {
     this->isDad = true;
     this->dad = nullptr;
 }
@@ -270,12 +274,16 @@ void LoopCommand::execute() {
 }
 
 bool LoopCommand::validate(vector<string> s) {
+    //todo
     return true;
 }
 
-LoopCommand::LoopCommand(map<string, string> *mapPath, map<string, double> *server) : ConditionParser(mapPath,
-                                                                                                      server) {}
+LoopCommand::LoopCommand(DoubleMap *mapPath, map<string, double> *server) : ConditionParser(mapPath,
+                                                                                            server) {}
 
+/**
+ * execute all commands in if block
+ */
 void IfCommand::execute() {
     if (this->checkCondition()) {
         for (auto tmp:this->conditionCommandList) {
@@ -285,12 +293,16 @@ void IfCommand::execute() {
 }
 
 bool IfCommand::validate(vector<string> s) {
+    // todo
     return true;
 }
 
-IfCommand::IfCommand(map<string, string> *mapPath, map<string, double> *server) : ConditionParser(mapPath, server) {
+IfCommand::IfCommand(DoubleMap *mapPath, map<string, double> *server) : ConditionParser(mapPath, server) {
 }
 
+/**
+ * set vat value
+ */
 void AssingmentCommand::execute() {
     string varName = this->parameters[0];
     string tmp = "";
@@ -298,30 +310,23 @@ void AssingmentCommand::execute() {
         tmp += this->parameters[i];
     }
     ShuntingYard s(tmp, this);
+    // calc var value
     double val = s.calculate();
     this->valMap->at(varName) = val;
+    // update simulator
     sendToClient(varName, val);
 }
 
+/**
+ * return var value
+ * @param s var name
+ * @return value
+ */
 double Command::getFromSymbolTable(string s) {
     if (this->valMap->count(s) == 0) {
-        cout << "not in map" << endl;
         throw "Not in Map";
     }
     return this->valMap->at(s);
-//    string path = this->symbolTable->at(s);
-//    if (path[0] != '"') {//var case
-//        path = this->serverMap->at(path);
-//    }
-//    double val = 0;
-//    if (serverMap != nullptr) {
-//        //delete the " from start and end
-//        //path = path.substr(1, path.size() - 2);
-//        cout << path << endl;
-//        val = this->serverMap->at(path);
-//    }
-//
-//    return val;
 }
 
 
@@ -329,7 +334,12 @@ void Command::setParam(vector<string> parameters) {
     this->parameters = parameters;
 }
 
-Command::Command(map<string, string> *mapPath, map<string, double> *valMap1) {
+/**
+ * CTOR
+ * @param mapPath
+ * @param valMap1
+ */
+Command::Command(DoubleMap *mapPath, map<string, double> *valMap1) {
     this->isDad = false;
     this->dad = nullptr;
     this->pathMap = mapPath;
@@ -337,16 +347,16 @@ Command::Command(map<string, string> *mapPath, map<string, double> *valMap1) {
 
 }
 
+/**
+ * @return condition command whice this command under it
+ */
 ConditionParser *Command::getDad() {
     return this->dad;
 }
 
 int Command::getIndexOfDelimiter() {
     for (int i = 0; i < this->parameters.size(); i++) {
-
-
         if (this->parameters[i] == ",") {
-
             return i;
         }
         if (i > 0) {
@@ -357,9 +367,14 @@ int Command::getIndexOfDelimiter() {
             }
         }
     }
+    // delimiter error case
     return -1;
 }
 
+/**
+ * @param s string
+ * @return true if is operator
+ */
 bool Command::isOperator(string s) {
     for (char c:s) {
         if (c != '+' && c != '-' && c != '*' && c != '/' && c != '(' && c != ')') {
@@ -370,24 +385,29 @@ bool Command::isOperator(string s) {
 }
 
 Command::~Command() {
-//    for (auto v:this->threadsList) {//todo
-//        delete v;
-//    }
+    for (auto &v:this->threadsList) {//todo
+        delete v;
+    }
 }
 
 bool PrintCommand::validate(vector<string> s) {
     return true;
 }
 
+/**
+ * print in monitor
+ */
 void PrintCommand::execute() {
     string buffer = "";
 
     for (auto tmp:this->parameters) {
         buffer += tmp;
     }
+    // if string - print it
     if (buffer[0] == '"') {
         buffer = buffer.substr(1, buffer.size() - 2);
         cout << buffer << endl;
+        // if num - calc & print
     } else {
         ShuntingYard sy(buffer, this);
         cout << sy.calculate() << endl;
@@ -395,30 +415,34 @@ void PrintCommand::execute() {
 
 }
 
-PrintCommand::PrintCommand(map<string, string> *mapPath, map<string, double> *server) : Command(mapPath, server) {}
+PrintCommand::PrintCommand(DoubleMap *mapPath, map<string, double> *server) : Command(mapPath, server) {}
 
+/**
+ * sleep for x seconds
+ */
 void SleepCommand::execute() {
     string buffer = "";
     for (auto tmp:this->parameters) {
         buffer += tmp;
     }
     ShuntingYard sy(buffer, this);
+    // calc num of seconds
     double val = sy.calculate();
     sleep(val);
 }
 
 bool SleepCommand::validate(vector<string> s) {
+    // todo
     return true;
 }
 
-SleepCommand::SleepCommand(map<string, string> *mapPath, map<string, double> *server) : Command(mapPath, server) {}
+SleepCommand::SleepCommand(DoubleMap *mapPath, map<string, double> *server) : Command(mapPath, server) {}
 
 bool AssingmentCommand::validate(vector<string> s) {
+    // todo
     return false;
 }
 
-AssingmentCommand::AssingmentCommand(map<string, string> *mapPath, map<string, double> *server) : Command(mapPath,
-                                                                                                          server) {
+AssingmentCommand::AssingmentCommand(DoubleMap *mapPath, map<string, double> *server) : Command(mapPath,
+                                                                                                server) {
 }
-
-

@@ -16,16 +16,16 @@
  * Create map command
  */
 ReadData::ReadData() {
-    this->mapSymb = new map<string, string>;
+//    this->mapSymb = new map<string, string>;
     this->serverMap = new map<string, double>;
-
-    commandMap.insert(pair<string, Command *>("openDataServer", new OpenServerCommand(this->mapSymb, this->serverMap)));
+    this->pathVarMap = new DoubleMap;
+/*    commandMap.insert(pair<string, Command *>("openDataServer", new OpenServerCommand(this->mapSymb, this->serverMap)));
     commandMap.insert(pair<string, Command *>("connect", new ConnectCommand(this->mapSymb, this->serverMap)));
     commandMap.insert(pair<string, Command *>("var", new DefineVarCommand(this->mapSymb, this->serverMap)));
     commandMap.insert(pair<string, Command *>("while", new LoopCommand(this->mapSymb, this->serverMap)));
     commandMap.insert(pair<string, Command *>("if", new IfCommand(this->mapSymb, this->serverMap)));
     commandMap.insert(pair<string, Command *>("print", new PrintCommand(this->mapSymb, this->serverMap)));
-    commandMap.insert(pair<string, Command *>("sleep", new SleepCommand(this->mapSymb, this->serverMap)));
+    commandMap.insert(pair<string, Command *>("sleep", new SleepCommand(this->mapSymb, this->serverMap)));*/
 }
 
 /**
@@ -149,22 +149,22 @@ void ReadData::parser() {
         }
         Command *c = nullptr;
         if (tmp[0] == "var") {
-            c = new DefineVarCommand(this->mapSymb, this->serverMap);
+            c = new DefineVarCommand(this->pathVarMap, this->serverMap);
         } else if (tmp[0] == "print") {
-            c = new PrintCommand(this->mapSymb, this->serverMap);
+            c = new PrintCommand(this->pathVarMap, this->serverMap);
         } else if (tmp[0] == "if") {
-            c = new IfCommand(this->mapSymb, this->serverMap);
+            c = new IfCommand(this->pathVarMap, this->serverMap);
         } else if (tmp[0] == "while") {
-            c = new LoopCommand(this->mapSymb, this->serverMap);
+            c = new LoopCommand(this->pathVarMap, this->serverMap);
         } else if (tmp[0] == "sleep") {
-            c = new SleepCommand(this->mapSymb, this->serverMap);
+            c = new SleepCommand(this->pathVarMap, this->serverMap);
         } else if (tmp[0] == "openDataServer") {
-            c = new OpenServerCommand(this->mapSymb, this->serverMap);
+            c = new OpenServerCommand(this->pathVarMap, this->serverMap);
         } else if (tmp[0] == "connect") {
-            c = new ConnectCommand(this->mapSymb, this->serverMap);
+            c = new ConnectCommand(this->pathVarMap, this->serverMap);
         }
         if (c == nullptr) {
-            c = new AssingmentCommand(this->mapSymb, this->serverMap);
+            c = new AssingmentCommand(this->pathVarMap, this->serverMap);
         } else {
             tmp.erase(tmp.begin());//delete the funcName
         }

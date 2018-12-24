@@ -12,6 +12,7 @@
 #include <map>
 #include <thread>
 #include "Expression.h"
+#include "DoubleMap.h"
 
 using namespace std;
 
@@ -25,7 +26,7 @@ class ConditionParser;
 class Command {
 
 protected:
-    map<string, string> *pathMap;
+    DoubleMap *pathMap;
     map<string, double> *valMap;
     vector<string> parameters;
     vector<thread *> threadsList;
@@ -74,7 +75,7 @@ public:
      * @param mapPath map: var to its path
      * @param serverMap map: var to its value
      */
-    Command(map<string, string> *mapPath, map<string, double> *serverMap);
+    Command(DoubleMap *mapPath, map<string, double> *serverMap);
 
     /**
      * set command parameters
@@ -108,7 +109,7 @@ protected:
     bool validate(vector<string> s) override;
 
 public:
-    ConnectCommand(map<string, string> *mapPath, map<string, double> *serverMap);
+    ConnectCommand(DoubleMap *mapPath, map<string, double> *serverMap);
 
     void execute() override;
 };
@@ -123,7 +124,7 @@ protected:
     bool validate(vector<string> s) override;
 
 public:
-    DefineVarCommand(map<string, string> *mapPath, map<string, double> *server);
+    DefineVarCommand(DoubleMap *mapPath, map<string, double> *server);
 
     /**
      * save data about new var
@@ -176,7 +177,7 @@ public:
      * @param mapPath map: var name to its path
      * @param serverMap map: var name to its value
      */
-    ConditionParser(map<string, string> *mapPath, map<string, double> *serverMap);
+    ConditionParser(DoubleMap *mapPath, map<string, double> *serverMap);
 
     void setParam(vector<string> parameters) override;
 
@@ -204,7 +205,7 @@ public:
 
 protected:
 public:
-    LoopCommand(map<string, string> *mapPath, map<string, double> *server);
+    LoopCommand(DoubleMap *mapPath, map<string, double> *server);
 
 protected:
     bool validate(vector<string> s) override;
@@ -219,7 +220,7 @@ protected:
     bool validate(vector<string> s) override;
 
 public:
-    IfCommand(map<string, string> *mapPath, map<string, double> *server);
+    IfCommand(DoubleMap *mapPath, map<string, double> *server);
 
     void execute() override;
 };
@@ -237,7 +238,7 @@ protected:
 public:
     void execute() override;
 
-    AssingmentCommand(map<string, string> *mapPath, map<string, double> *serverMap);
+    AssingmentCommand(DoubleMap *mapPath, map<string, double> *serverMap);
 };
 
 /**
@@ -248,7 +249,7 @@ protected:
     bool validate(vector<string> s) override;
 
 public:
-    PrintCommand(map<string, string> *mapPath, map<string, double> *server);
+    PrintCommand(DoubleMap *mapPath, map<string, double> *server);
 
     void execute() override;
 };
@@ -262,7 +263,7 @@ public:
 
 protected:
 public:
-    SleepCommand(map<string, string> *mapPath, map<string, double> *server);
+    SleepCommand(DoubleMap *mapPath, map<string, double> *server);
 
 protected:
     bool validate(vector<string> s) override;

@@ -16,6 +16,7 @@ using namespace std;
 #include <fstream>
 #include <map>
 #include "Command.h"
+#include "DoubleMap.h"
 
 class ReadData {
 
@@ -31,10 +32,9 @@ private:
 
     vector<vector<string>> vec;
     map<string, Command *> commandMap;
-    map<string, string> *mapSymb;
+    DoubleMap *pathVarMap;
+    //map<string, string> *mapSymb;
     map<string, double> *serverMap;
-
-    void initMap();
 
 public:
     // ReadData(const std::vector<string> &vec);

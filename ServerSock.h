@@ -25,7 +25,7 @@
 class ServerSock : public OpenServerCommand {
 public:
     void static
-    openServer(int portNumber, int myHz, map<string, string> pathMapServer, map<string, double> &valMapServer) {
+    openServer(int portNumber, int myHz, DoubleMap &pathMapServer, map<string, double> &valMapServer) {
         cout << "try to connect.." << endl;
         int sockfd, newsockfd, clilen;
         char buffer[256];

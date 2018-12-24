@@ -15,12 +15,17 @@
 
 using namespace std;
 
+/**
+ * Open server
+ * using to get simulator values
+ */
 void OpenServerCommand::execute() {
     try {
         int index = this->getIndexOfDelimiter();
         if (index == -1) {
             throw "just one arg!";
         }
+        // calc port & Hz
         string ex1;
         string ex2;
         for (int i = 0; i < this->parameters.size(); i++) {
@@ -30,13 +35,15 @@ void OpenServerCommand::execute() {
                 ex2 += this->parameters[i];
             }
         }
-        ShuntingYard s1(ex1, this);//todo check if work
+        ShuntingYard s1(ex1, this);
         ShuntingYard s2(ex2, this);
         int port = (int) s1.calculate();
         int hz = (int) s2.calculate();
-        map<string, string> &refPathMap = *this->pathMap;
+        // hold 2 maps, get path and return value
+        DoubleMap &refPathMap = *this->pathMap;
         map<string, double> &refValMap = *this->valMap;
-        thread *openServ = new thread(ServerSock::openServer, (port), (hz), refPathMap, ref(refValMap));
+        // open server in new thread
+        thread *openServ = new thread(ServerSock::openServer, (port), (hz), ref(refPathMap), ref(refValMap));
         this->threadsList.push_back(openServ);
 
     } catch (...) {
@@ -45,10 +52,11 @@ void OpenServerCommand::execute() {
 }
 
 bool OpenServerCommand::validate(vector<string> s) {
-    return false;
+    // todo, now no one using this func
+    return true;
 }
 
 
-OpenServerCommand::OpenServerCommand(map<string, string> *mapPath, map<string, double> *server) : Command(mapPath,
-                                                                                                          server) {
-}
+OpenServerCommand::OpenServerCommand(DoubleMap *mapPath, map<string, double> *server) : Command(mapPath,
+                                                                                                server) {}
+

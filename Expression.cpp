@@ -67,6 +67,10 @@ ClosePar::ClosePar() {
 
 }
 
+/**
+ * calc rigt & left expressions
+ * @return
+ */
 double BoolExpression::calculate() {
     double r = this->Right->calculate();
     double l = this->left->calculate();

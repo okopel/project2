@@ -13,12 +13,16 @@
 #include <stdio.h>
 #include <string>
 
+/**
+ * Command: open server
+ */
 class OpenServerCommand : public Command {
 protected:
     bool validate(vector<string> s) override;
 
 public:
-    OpenServerCommand(map<string, string> *mapPath, map<string, double> *serverMap);
+
+    OpenServerCommand(DoubleMap *mapPath, map<string, double> *serverMap);
 
     void execute() override;
 };
