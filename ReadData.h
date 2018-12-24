@@ -29,6 +29,8 @@ private:
 
     bool isPar(char c);
 
+    void initServerMap();
+
 
     vector<vector<string>> vec;
     map<string, Command *> commandMap;
