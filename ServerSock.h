@@ -71,11 +71,7 @@ public:
         cout << "connection has started" << endl;
         /* If connection is established then start communicating */
         while (true) {
-            string getter;
-            for (auto item:pathMapServer) {
-                getter = "get " + item.second + "\r\n";
 
-            }
             this_thread::sleep_for(0.1s);
             bzero(buffer, 256);
             n = read(newsockfd, buffer, 255);
@@ -92,12 +88,31 @@ public:
                 }
             }
             if (seglist.size() >= 22) {
-//                int i = 0;
-                //  for (auto item:pathMapServer) {//todo check which args?
-//              for(auto item:seglist)
-//                    valMapServer.at(item.first) = stod(seglist[i]);
-//                    i++;
-//                }
+//
+//                this->serverMap->insert(pair<string, double>("/instrumentation/airspeed-indicator/indicated-speed-kt", 0));
+//                this->serverMap->insert(pair<string, double>("/instrumentation/altimeter/indicated-altitude-ft", 0));
+//                this->serverMap->insert(pair<string, double>("/instrumentation/altimeter/pressure-alt-ft", 0));
+//                this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/indicated-pitch-deg", 0));
+//                this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/indicated-roll-deg", 0));
+//                this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/internal-pitch-deg", 0));
+//                this->serverMap->insert(pair<string, double>("/instrumentation/attitude-indicator/internal-roll-deg", 0));
+//                this->serverMap->insert(pair<string, double>("/instrumentation/encoder/indicated-altitude-ft", 0));
+//                this->serverMap->insert(pair<string, double>("/instrumentation/encoder/pressure-alt-ft", 0));
+//                this->serverMap->insert(pair<string, double>("/instrumentation/gps/indicated-altitude-ft", 0));
+//                this->serverMap->insert(pair<string, double>("/instrumentation/gps/indicated-ground-speed-kt", 0));
+//                this->serverMap->insert(pair<string, double>("/instrumentation/gps/indicated-vertical-speed", 0));
+//                this->serverMap->insert(pair<string, double>("/instrumentation/heading-indicator/indicated-heading-deg", 0));
+//                this->serverMap->insert(pair<string, double>("/instrumentation/magnetic-compass/indicated-heading-deg", 0));
+//                this->serverMap->insert(pair<string, double>("/instrumentation/slip-skid-ball/indicated-slip-skid", 0));
+//                this->serverMap->insert(pair<string, double>("/instrumentation/turn-indicator/indicated-turn-rate", 0));
+//                this->serverMap->insert(pair<string, double>("/instrumentation/vertical-speed-indicator/indicated-speed-fpm", 0));
+//                this->serverMap->insert(pair<string, double>("/controls/flight/aileron", 0));
+//                this->serverMap->insert(pair<string, double>("/controls/flight/elevator", 0));
+//                this->serverMap->insert(pair<string, double>("/controls/flight/rudder", 0));
+//                this->serverMap->insert(pair<string, double>("/controls/flight/flaps", 0));
+//                this->serverMap->insert(pair<string, double>("/controls/engines/engine/throttle", 0));
+//
+
             } else {
                 cout << "the simulator doesn't give 22 args" << endl;
             }

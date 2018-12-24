@@ -369,6 +369,12 @@ bool Command::isOperator(string s) {
     return true;
 }
 
+Command::~Command() {
+//    for (auto v:this->threadsList) {//todo
+//        delete v;
+//    }
+}
+
 bool PrintCommand::validate(vector<string> s) {
     return true;
 }

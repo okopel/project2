@@ -113,11 +113,13 @@ double ShuntingYard::calculate() {
 
             Expression *e1 = new Number(0);
             if (nums.size() > 0) {
+                delete e1;
                 e1 = nums.top();
                 nums.pop();
             }
             Expression *e2 = new Number(0);
             if (nums.size() > 0) {
+                delete e2;
                 e2 = nums.top();
                 nums.pop();
             }
@@ -126,8 +128,15 @@ double ShuntingYard::calculate() {
         queue.pop();
     }
     Expression *result = nums.top();
+    double res = result->calculate();
 
-    return result->calculate();
+    while (!nums.empty()) {
+        auto e = nums.top();
+        nums.pop();
+        delete e;
+
+    }
+    return res;
 
 }
 

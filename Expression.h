@@ -20,6 +20,8 @@ public:
     virtual double calculate() = 0;
 
     char getOperator();
+
+    virtual ~Expression();
 };
 
 class Number : public Expression {
@@ -44,12 +46,12 @@ public:
     double calculate() override;
 };
 
-class openPar:public  UnaryExpression{
+class openPar : public UnaryExpression {
 public:
     openPar();
 };
 
-class ClosePar:public  UnaryExpression{
+class ClosePar : public UnaryExpression {
 public:
     ClosePar();
 };
@@ -66,19 +68,24 @@ protected:
 public:
     double calculate() = 0;
 
+    virtual ~BinaryExpression() {
+        delete this->left;
+        delete this->Right;
+    }
+
     BinaryExpression(Expression *left, Expression *Right) : left(left), Right(Right) {};
 };
 
 class Plus : public BinaryExpression {
 public:
-    Plus(Expression* l, Expression* r);
+    Plus(Expression *l, Expression *r);
 
     double calculate() override;
 };
 
 class Minus : public BinaryExpression {
 public:
-    Minus(Expression* l, Expression* r);
+    Minus(Expression *l, Expression *r);
 
     double calculate() override;
 };
@@ -86,14 +93,14 @@ public:
 
 class Mul : public BinaryExpression {
 public:
-    Mul(Expression* l, Expression* r);
+    Mul(Expression *l, Expression *r);
 
     double calculate() override;
 };
 
 class Div : public BinaryExpression {
 public:
-    Div(Expression* l, Expression* r);
+    Div(Expression *l, Expression *r);
 
     double calculate() override;
 };

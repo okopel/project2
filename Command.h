@@ -30,7 +30,10 @@ protected:
     vector<string> parameters;
     vector<thread *> threadsList;
     ConditionParser *dad;
+public:
+    virtual ~Command();
 
+protected:
     /**
      * valid func
      * @param s number

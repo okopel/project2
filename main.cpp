@@ -11,27 +11,28 @@
 #include <list>
 
 int main(int argc, char **argv) {
-
+    ReadData x;
+    /**
+     * check if there is one word input, so its fileName
+     */
     if (argc == 2) {
-        ReadData x;
         x.lexer(argv[1]);
-        x.parser();
     } else {
         string input;
         vector<vector<string>> v;
-        ReadData x;
         cout << "Enter mission for me, mister checker" << endl;
         getline(cin, input);
-
-        while (input != "exit") {
+        while ((input != "exit") && (input != "quit")) {
             v.push_back(x.arrangeVector(input));
             getline(cin, input);
         }
         x.setVec(v);
-        x.parser();
-        cout << "ByeBye! Nice to meet you" << endl;
     }
-
+    /**
+     * parse the file or the input
+     */
+    x.parser();
+    cout << endl << "ByeBye! Nice to meet you" << endl;
 
     int y;
     cin >> y;

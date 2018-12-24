@@ -54,6 +54,10 @@ char Expression::getOperator() {
     return this->operatorType;
 }
 
+Expression::~Expression() {
+//todo
+}
+
 openPar::openPar() {
     this->operatorType = '(';
 }
