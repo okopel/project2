@@ -217,7 +217,6 @@ void LoopCommand::execute() {
             tmp->execute();
         }
     }
-    cout << "x";
 }
 
 bool LoopCommand::validate(vector<string> s) {

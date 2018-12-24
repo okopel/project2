@@ -43,7 +43,7 @@ void ReadData::initServerMap() {
     this->serverMap->insert(pair<string, double>("/controls/flight/elevator", 0));
     this->serverMap->insert(pair<string, double>("/controls/flight/rudder", 0));
     this->serverMap->insert(pair<string, double>("/controls/flight/flaps", 0));
-    this->serverMap->insert(pair<string, double>("/controls/engines/engine/throttle", 0));
+    this->serverMap->insert(pair<string, double>("/controls/engines/current-engine/throttle", 0));
 }
 
 /**
@@ -200,9 +200,11 @@ void ReadData::parser() {
             c->setDad(dad);
             dad = (ConditionParser *) c;
         }
-        string check = tmp[tmp.size() - 1];
-        if (check == "}" || check[check.size() - 1] == '}') {
-            dad = dad->getDad();
+        if (tmp.size() > 0) {
+            string check = tmp[tmp.size() - 1];
+            if (check == "}" || check[check.size() - 1] == '}') {
+                dad = dad->getDad();
+            }
         }
     }
 

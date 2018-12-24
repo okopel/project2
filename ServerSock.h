@@ -91,7 +91,7 @@ public:
                                  "/controls/flight/elevator",
                                  "/controls/flight/rudder",
                                  "/controls/flight/flaps",
-                                 "/controls/engines/engine/throttle"
+                                 "/controls/engines/current-engine/throttle"
         };
         /* If connection is established then start communicating */
         while (true) {
@@ -115,7 +115,6 @@ public:
                     continue;
                 }
                 mtx.lock();
-                cout << seglist[i] << endl;
                 valMapServer.at(var) = stod(seglist[i]);
                 mtx.unlock();
             }
