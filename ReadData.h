@@ -28,14 +28,10 @@ private:
     bool isBoolOperator(char c);
 
     bool isPar(char c);
-
     void initServerMap();
-
-
     vector<vector<string>> vec;
     map<string, Command *> commandMap;
     DoubleMap *pathVarMap;
-    //map<string, string> *mapSymb;
     map<string, double> *serverMap;
 
 public:

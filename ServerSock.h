@@ -108,12 +108,14 @@ public:
                     segment = "";
                 }
             }
+//            cout<<pathes[1]<<"  "<<pathMapServer.getVar(pathes[1])<< "  "<<seglist[1]<<endl;
             for (int i = 0; i < min(pathes.size(), seglist.size()); i++) {
                 string var = pathMapServer.getVar(pathes[i]);
                 if (var == "") {
                     continue;
                 }
                 mtx.lock();
+                cout << seglist[i] << endl;
                 valMapServer.at(var) = stod(seglist[i]);
                 mtx.unlock();
             }

@@ -16,17 +16,9 @@
  * Create map command
  */
 ReadData::ReadData() {
-//    this->mapSymb = new map<string, string>;
     this->serverMap = new map<string, double>;
     this->initServerMap();
     this->pathVarMap = new DoubleMap;
-/*    commandMap.insert(pair<string, Command *>("openDataServer", new OpenServerCommand(this->mapSymb, this->serverMap)));
-    commandMap.insert(pair<string, Command *>("connect", new ConnectCommand(this->mapSymb, this->serverMap)));
-    commandMap.insert(pair<string, Command *>("var", new DefineVarCommand(this->mapSymb, this->serverMap)));
-    commandMap.insert(pair<string, Command *>("while", new LoopCommand(this->mapSymb, this->serverMap)));
-    commandMap.insert(pair<string, Command *>("if", new IfCommand(this->mapSymb, this->serverMap)));
-    commandMap.insert(pair<string, Command *>("print", new PrintCommand(this->mapSymb, this->serverMap)));
-    commandMap.insert(pair<string, Command *>("sleep", new SleepCommand(this->mapSymb, this->serverMap)));*/
 }
 
 void ReadData::initServerMap() {
@@ -205,7 +197,7 @@ void ReadData::parser() {
             commandList.push_back(c);
         }
         if (c->isDad) {
-            //c->setDad(dad);
+            c->setDad(dad);
             dad = (ConditionParser *) c;
         }
         string check = tmp[tmp.size() - 1];

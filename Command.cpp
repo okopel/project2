@@ -68,6 +68,7 @@ void DefineVarCommand::execute() {
         }
         // update path map
         //this->pathMap->insert(pair<string, string>(var, path));
+        path = path.substr(1, path.size() - 2);
         this->pathMap->addArg(var, path); // todo if there are 2 arg
         // not bind
     } else {
@@ -79,9 +80,6 @@ void DefineVarCommand::execute() {
         ShuntingYard s(tmp, this);
         this->valMap->at(var) = s.calculate();
     }
-//    if (var[0] == '(') {
-//        var = var.substr(1, var.size() - 1);
-//    }
 }
 
 bool DefineVarCommand::validate(vector<string> s) {
