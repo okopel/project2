@@ -28,6 +28,7 @@ public:
     void static
     openServer(int portNumber, int myHz, DoubleMap &pathMapServer, map<string, double> &valMapServer) {
         cout << "try to connect.." << endl;
+        mutex mtx;
         int sockfd, newsockfd, clilen;
         char buffer[256];
         struct sockaddr_in serv_addr, cli_addr;
@@ -43,8 +44,6 @@ public:
 
         /* Initialize socket structure */
         bzero((char *) &serv_addr, sizeof(serv_addr));
-
-
         serv_addr.sin_family = AF_INET;
         serv_addr.sin_addr.s_addr = INADDR_ANY;
         serv_addr.sin_port = htons(portNumber);
@@ -101,35 +100,24 @@ public:
             n = read(newsockfd, buffer, 255);
             std::string segment;
             std::vector<std::string> seglist;
-
             for (char c:buffer) {
                 if ((c != ',') && (c != '\n')) {
-
                     segment += c;
                 } else {
                     seglist.push_back(segment);
                     segment = "";
                 }
             }
-
-            if (seglist.size() >= 22) {
-                mutex mtx;
-                for (int i = 0; i < pathes.size(); i++) {
-                    string var = pathMapServer.getVar(pathes[i]);
-                    if (var == "") {
-                        continue;
-                    }
-                    mtx.lock();
-                    valMapServer.at(var) = stod(seglist[i]);
-                    mtx.unlock();
+            for (int i = 0; i < min(pathes.size(), seglist.size()); i++) {
+                string var = pathMapServer.getVar(pathes[i]);
+                if (var == "") {
+                    continue;
                 }
-                cout << " val's updated!" << endl;
-            } else {
-                cout << "the simulator doesn't give 22 args" << endl;
+                mtx.lock();
+                valMapServer.at(var) = stod(seglist[i]);
+                mtx.unlock();
             }
         }
     }
 };
-
-
 #endif //PROJECT_SERVERSOCK_H

@@ -103,14 +103,11 @@ ShuntingYard::ShuntingYard(string s, Command *com) {
 }
 
 double ShuntingYard::calculate() {
-
     ::stack<Expression *> nums;
-
     while (!this->queue.empty()) {
         if (isNumber(queue.front())) {
             nums.push(new Number(queue.front()));
         } else if (isOperator(queue.front()[0])) {
-
             Expression *e1 = new Number(0);
             if (nums.size() > 0) {
                 delete e1;
@@ -129,12 +126,10 @@ double ShuntingYard::calculate() {
     }
     Expression *result = nums.top();
     double res = result->calculate();
-
     while (!nums.empty()) {
         auto e = nums.top();
         nums.pop();
         delete e;
-
     }
     return res;
 

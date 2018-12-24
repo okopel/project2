@@ -16,6 +16,7 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <string>
+#include <mutex>
 
 string msgToServer;
 
@@ -26,7 +27,10 @@ string msgToServer;
  */
 void sendToClient(const string address, double val) {
 //        if(!valifation()){throw..}
+    mutex m;
+    m.lock();
     msgToServer = "set " + address + " " + to_string(val) + "\r\n";
+    m.unlock();
 }
 
 /**
@@ -35,6 +39,7 @@ void sendToClient(const string address, double val) {
  * @param ipPath
  */
 void ConnectClient(int portNumber, string ipPath) {
+    mutex m;
     int waiter;
     // ask char to continue
     cout << "enter Num to continue" << endl;
@@ -70,7 +75,6 @@ void ConnectClient(int portNumber, string ipPath) {
         perror("ERROR connecting");
         exit(1);
     }
-
     /* Send message to the server */
     while (true) {
         this_thread::sleep_for(0.1s);
@@ -78,7 +82,9 @@ void ConnectClient(int portNumber, string ipPath) {
             const char *c = msgToServer.c_str();
             //n = write(sockfd, c, strlen(buffer));
             n = send(sockfd, c, strlen(buffer), MSG_EOR);//todo MSG_OOB?
+            m.lock();
             msgToServer = "";
+            m.unlock();
         }
         if (n < 0) {
             perror("ERROR writing to socket");
@@ -86,16 +92,6 @@ void ConnectClient(int portNumber, string ipPath) {
         }
     }
 
-//    /* Now read server response */
-//    bzero(buffer, 256);
-//    n = read(sockfd, buffer, 255);
-//
-//    if (n < 0) {
-//        perror("ERROR reading from socket");
-//        exit(1);
-//    }
-//
-//    printf("%s\n", buffer);
 }
 
 #endif //PROJECT_CLIENT_H
