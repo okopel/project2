@@ -133,7 +133,7 @@ public:
 
                 }
                 locker.lock();
-                valMapServer->at(var) = stod(seglist[i]); //todo arrange the SHEERIOT
+                valMapServer->at(var) = stod(seglist[i]);
                 locker.unlock();
             }
         }

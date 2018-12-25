@@ -29,7 +29,7 @@ mutex clientLocker;
 void sendToClient(const string address, double val) {
 //        if(!valifation()){throw..}
     clientLocker.lock();
-    msgToServer = "set " + address + " " + to_string(val) + "\r\n";
+    msgToServer += "set " + address + " " + to_string(val) + "\r\n";
     clientLocker.unlock();
 }
 
