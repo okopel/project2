@@ -255,6 +255,7 @@ void AssingmentCommand::execute() {
     this->valMap->at(varName) = val;
     // update simulator
     sendToClient(varName, val);
+//    cout<<"var:"<<varName<<" Sent with:"<<val<<endl;
 }
 
 /**
