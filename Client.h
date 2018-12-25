@@ -77,7 +77,7 @@ void ConnectClient(int portNumber, string ipPath) {
             clientLocker.lock();
             const char *c = msgToServer.c_str();
             clientLocker.unlock();
-            cout << "MSG:" << msgToServer << endl;
+//            cout << "MSG:" << msgToServer << endl;
             n = send(sockfd, c, strlen(buffer), MSG_EOR);//todo MSG_OOB?
 
             clientLocker.lock();
