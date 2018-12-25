@@ -31,11 +31,6 @@ void ConnectCommand::execute() {
     }
 }
 
-bool ConnectCommand::validate(vector<string> s) {
-    // todo
-    return false;
-}
-
 ConnectCommand::ConnectCommand(DoubleMap *mapPath, map<string, double> *serverMap) : Command(mapPath,
                                                                                              serverMap) {}
 
@@ -43,10 +38,7 @@ ConnectCommand::ConnectCommand(DoubleMap *mapPath, map<string, double> *serverMa
  * define new var, bind it or initial its value
  */
 void DefineVarCommand::execute() {
-    // not valid
-    if (!this->validate(this->parameters)) {
-        throw "Error on VarCommand";
-    }
+    try {
     string var = this->parameters[0];
     string path;
     // update map
@@ -74,11 +66,7 @@ void DefineVarCommand::execute() {
         ShuntingYard s(tmp, this);
         this->valMap->at(var) = s.calculate();
     }
-}
-
-bool DefineVarCommand::validate(vector<string> s) {
-    // todo
-    return true;
+    } catch (...) {throw "syntax error";}
 }
 
 /**
@@ -213,11 +201,6 @@ void LoopCommand::execute() {
     }
 }
 
-bool LoopCommand::validate(vector<string> s) {
-    //todo
-    return true;
-}
-
 LoopCommand::LoopCommand(DoubleMap *mapPath, map<string, double> *server) : ConditionParser(mapPath,
                                                                                             server) {}
 
@@ -232,11 +215,6 @@ void IfCommand::execute() {
     }
 }
 
-bool IfCommand::validate(vector<string> s) {
-    // todo
-    return true;
-}
-
 IfCommand::IfCommand(DoubleMap *mapPath, map<string, double> *server) : ConditionParser(mapPath, server) {
 }
 
@@ -244,6 +222,7 @@ IfCommand::IfCommand(DoubleMap *mapPath, map<string, double> *server) : Conditio
  * set vat value
  */
 void AssingmentCommand::execute() {
+    try {
     string varName = this->parameters[0];
     string tmp = "";
     for (int i = 2; i < this->parameters.size(); i++) {
@@ -255,7 +234,7 @@ void AssingmentCommand::execute() {
     this->valMap->at(varName) = val;
     // update simulator
     sendToClient(varName, val);
-//    cout<<"var:"<<varName<<" Sent with:"<<val<<endl;
+    } catch (...) {throw "assignment failed";}
 }
 
 /**
@@ -337,32 +316,28 @@ void Command::join() {
     }
 }
 
-bool PrintCommand::validate(vector<string> s) {
-    return true;
-}
-
 /**
  * print in monitor
  */
 void PrintCommand::execute() {
     string buffer = "";
 
-    for (auto tmp:this->parameters) {
-        buffer += tmp;
-    }
-    // if string - print it
-    if (buffer[0] == '"') {
-        buffer = buffer.substr(1, buffer.size() - 2);
-        //print the string
-        cout << buffer << endl;
-        return;
-    }
-    // if num - calc & print
-    //cout << "BUF:" << buffer << endl;
-    ShuntingYard sy(buffer, this);
-    //print the value of the var
-    cout << sy.calculate() << endl;
-
+    try {
+        for (auto tmp:this->parameters) {
+            buffer += tmp;
+        }
+        // if string - print it
+        if (buffer[0] == '"') {
+            buffer = buffer.substr(1, buffer.size() - 2);
+            //print the string
+            cout << buffer << endl;
+            return;
+        }
+        // if num - calc & print
+        ShuntingYard sy(buffer, this);
+        //print the value of the var
+        cout << sy.calculate() << endl;
+    } catch (...) {throw "print failed";}
 }
 
 PrintCommand::PrintCommand(DoubleMap *mapPath, map<string, double> *server) : Command(mapPath, server) {}
@@ -371,6 +346,7 @@ PrintCommand::PrintCommand(DoubleMap *mapPath, map<string, double> *server) : Co
  * sleep for x seconds
  */
 void SleepCommand::execute() {
+    try {
     string buffer = "";
     for (auto tmp:this->parameters) {
         buffer += tmp;
@@ -379,26 +355,13 @@ void SleepCommand::execute() {
     // calc num of seconds
     double val = sy.calculate();
     usleep(val);
-}
-
-bool SleepCommand::validate(vector<string> s) {
-    // todo
-    return true;
+    } catch (...) {throw "sleep failed";}
 }
 
 SleepCommand::SleepCommand(DoubleMap *mapPath, map<string, double> *server) : Command(mapPath, server) {}
 
-bool AssingmentCommand::validate(vector<string> s) {
-    // todo
-    return false;
-}
-
 AssingmentCommand::AssingmentCommand(DoubleMap *mapPath, map<string, double> *server) : Command(mapPath,
                                                                                                 server) {
-}
-
-bool EnterCCommand::validate(vector<string> s) {
-    return true;
 }
 
 void EnterCCommand::execute() {

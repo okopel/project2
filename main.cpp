@@ -26,10 +26,16 @@ int main(int argc, char **argv) {
         }
         x.setVec(v);
     }
+
     /**
      * parse the file or the input
      */
-    x.parser();
-    cout << endl << "ByeBye! Nice to meet you" << endl;
-
+    try {
+        x.parser();
+        cout << endl << "ByeBye! Nice to meet you" << endl;
+    } catch (string s){
+        cout << s << endl;
+    } catch (...) {
+        cout << "program failed" << endl;
+    }
 }

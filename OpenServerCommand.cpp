@@ -43,12 +43,6 @@ void OpenServerCommand::execute() {
     }
 }
 
-bool OpenServerCommand::validate(vector<string> s) {
-    // todo, now no one using this func
-    return true;
-}
-
-
 OpenServerCommand::OpenServerCommand(DoubleMap *mapPath, map<string, double> *server) : Command(mapPath,
                                                                                                 server) {}
 

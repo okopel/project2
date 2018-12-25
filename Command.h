@@ -55,13 +55,6 @@ protected:
      */
     int getIndexOfDelimiter();
 
-    /**
-     * validation function
-     * @param s vector of params to command
-     * @return true for valid, otherwise false
-     */
-    virtual bool validate(vector<string> s) = 0;
-
 public:
     virtual ~Command();
 
@@ -109,9 +102,6 @@ public:
  * command: connect as client to simulator
  */
 class ConnectCommand : public Command {
-protected:
-    bool validate(vector<string> s) override;
-
 public:
     ConnectCommand(DoubleMap *mapPath, map<string, double> *serverMap);
 
@@ -126,9 +116,6 @@ public:
     void execute() override;
 
     EnterCCommand(DoubleMap *mapPath, map<string, double> *serverMap);
-
-protected:
-    bool validate(vector<string> s) override;
 };
 
 /**
@@ -137,9 +124,6 @@ protected:
  * or init var value
  */
 class DefineVarCommand : public Command {
-protected:
-    bool validate(vector<string> s) override;
-
 public:
     DefineVarCommand(DoubleMap *mapPath, map<string, double> *server);
 
@@ -223,19 +207,12 @@ public:
 protected:
 public:
     LoopCommand(DoubleMap *mapPath, map<string, double> *server);
-
-protected:
-    bool validate(vector<string> s) override;
 };
 
 /**
  * command: if block of commands
  */
 class IfCommand : public ConditionParser {
-public:
-protected:
-    bool validate(vector<string> s) override;
-
 public:
     IfCommand(DoubleMap *mapPath, map<string, double> *server);
 
@@ -248,10 +225,6 @@ public:
  * this command connect to simulator and set var
  */
 class AssingmentCommand : public Command {
-
-protected:
-    bool validate(vector<string> s) override;
-
 public:
     void execute() override;
 
@@ -262,9 +235,6 @@ public:
  * command: print to monitor
  */
 class PrintCommand : public Command {
-protected:
-    bool validate(vector<string> s) override;
-
 public:
     PrintCommand(DoubleMap *mapPath, map<string, double> *server);
 
@@ -281,9 +251,6 @@ public:
 protected:
 public:
     SleepCommand(DoubleMap *mapPath, map<string, double> *server);
-
-protected:
-    bool validate(vector<string> s) override;
 };
 
 #endif //PROJECT_COMMAND_H

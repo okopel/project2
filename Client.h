@@ -27,10 +27,12 @@ mutex clientLocker;
  * @param val - new value
  */
 void sendToClient(const string address, double val) {
-//        if(!valifation()){throw..}
-    clientLocker.lock();
-    msgToServer += "set " + address + " " + to_string(val) + "\r\n";
-    clientLocker.unlock();
+    try {
+        clientLocker.lock();
+        msgToServer += "set " + address + " " + to_string(val) + "\r\n";
+        clientLocker.unlock();
+    } catch (...) {throw "connection failed";}
+
 }
 
 /**
@@ -77,7 +79,6 @@ void ConnectClient(int portNumber, string ipPath) {
             clientLocker.lock();
             const char *c = msgToServer.c_str();
             clientLocker.unlock();
-//            cout << "MSG:" << msgToServer << endl;
             n = send(sockfd, c, strlen(buffer), MSG_EOR);//todo MSG_OOB?
 
             clientLocker.lock();
