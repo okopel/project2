@@ -127,11 +127,6 @@ public:
                 if (var == "") {
                     continue;
                 }
-                cout << var << ":" << stod(seglist[i]) << endl;
-                if (var == "alt") {
-                    cout << "alt:" << stod(seglist[i]);
-
-                }
                 locker.lock();
                 valMapServer->at(var) = stod(seglist[i]);
                 locker.unlock();

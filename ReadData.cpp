@@ -211,6 +211,10 @@ void ReadData::parser() {
     for (Command *tmp:commandList) {
         tmp->execute();
     }
+    for (Command *tmp:commandList) {
+        tmp->join();
+    }
+
 
 
 }//end of parser

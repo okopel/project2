@@ -29,10 +29,10 @@ protected:
     DoubleMap *pathMap;
     map<string, double> *valMap;
     vector<string> parameters;
-    vector<thread *> threadsList;
+//    vector<thread *> threadsList;
+    thread *comThread;
     ConditionParser *dad;
-public:
-    virtual ~Command();
+
 
 protected:
     /**
@@ -63,6 +63,10 @@ protected:
     virtual bool validate(vector<string> s) = 0;
 
 public:
+    virtual ~Command();
+
+    void join();
+
     /**
      * check if this command is in block
      */

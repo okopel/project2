@@ -6,7 +6,6 @@
  ******************************/
 
 #include "ServerSock.h"
-#include "ShuntingYard.h"
 
 using namespace std;
 
@@ -36,10 +35,8 @@ void OpenServerCommand::execute() {
         int hz = (int) s2.calculate();
         // hold 2 maps, get path and return value
         DoubleMap &refPathMap = *this->pathMap;
-//        map<string, double> &refValMap = *this->valMap;
         // open server in new thread
-        thread *openServ = new thread(ServerSock::openServer, (port), (hz), ref(refPathMap), ref(this->valMap));
-        this->threadsList.push_back(openServ);
+        this->comThread = new thread(ServerSock::openServer, (port), (hz), ref(refPathMap), ref(this->valMap));
 
     } catch (...) {
         throw "Error in openServer";

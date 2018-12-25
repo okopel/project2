@@ -24,7 +24,7 @@ void ConnectCommand::execute() {
         // calc port
         ShuntingYard s(tmp, this);
         int port = (int) s.calculate();
-        this->threadsList.push_back(new thread(ConnectClient, port, ip));
+        this->comThread = new thread(ConnectClient, port, ip);
 
     } catch (...) {
         throw "Error in connectToClient";
@@ -284,7 +284,7 @@ Command::Command(DoubleMap *mapPath, map<string, double> *valMap1) {
     this->dad = nullptr;
     this->pathMap = mapPath;
     this->valMap = valMap1;
-
+    this->comThread = nullptr;
 }
 
 /**
@@ -325,8 +325,14 @@ bool Command::isOperator(string s) {
 }
 
 Command::~Command() {
-    for (thread *t:this->threadsList) {
-        delete t;
+    if (comThread != nullptr) {
+        delete comThread;
+    }
+}
+
+void Command::join() {
+    if (this->comThread != nullptr) {
+        comThread->join();
     }
 }
 
