@@ -74,9 +74,12 @@ void ConnectClient(int portNumber, string ipPath) {
     while (true) {
         this_thread::sleep_for(0.1s);
         if (!msgToServer.empty()) {
+            clientLocker.lock();
             const char *c = msgToServer.c_str();
-            //n = write(sockfd, c, strlen(buffer));
+            clientLocker.unlock();
+
             n = send(sockfd, c, strlen(buffer), MSG_EOR);//todo MSG_OOB?
+
             clientLocker.lock();
             msgToServer = "";
             clientLocker.unlock();
