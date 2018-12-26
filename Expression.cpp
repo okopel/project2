@@ -81,3 +81,8 @@ double BoolExpression::calculate() {
 BoolExpression::BoolExpression(Expression *l, Expression *r) : BinaryExpression(l, r) {
 
 }
+
+BinaryExpression::~BinaryExpression() {
+    delete this->left;
+    delete this->Right;
+}

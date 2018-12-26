@@ -92,10 +92,7 @@ protected:
 public:
     double calculate() = 0;
 
-    virtual ~BinaryExpression() {
-        delete this->left;
-        delete this->Right;
-    }
+    ~BinaryExpression();
 
     BinaryExpression(Expression *left, Expression *Right) : left(left), Right(Right) {};
 };
