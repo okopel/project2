@@ -14,12 +14,12 @@
 #include "Expression.h"
 #include "DoubleMap.h"
 #include "Global.h"
+
 using namespace std;
 
 
 class ConditionParser;
 
-//todo Var y = bind x
 /**
  * command interface
  * command is a mission to execute
@@ -130,15 +130,6 @@ class DefineVarCommand : public Command {
 public:
     DefineVarCommand(DoubleMap *mapPath, map<string, double> *server);
 
-    /**
-     * save data about new var
-     * @param s name
-     * @param val value
-     */
-    void addVar(string s, double val);
-
-    void setVar(string s, double val);
-
     void execute() override;
 };
 
@@ -147,12 +138,6 @@ public:
  */
 class ConditionParser : public Command {
 private:
-    /**
-     * parse condition to vector
-     * @param s condition as string
-     * @return ordered vector
-     */
-    vector<string> rePhrser(vector<string> s);
 
     /**
      * find boolean operator index in condition

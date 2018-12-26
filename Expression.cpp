@@ -10,6 +10,10 @@ double Number::calculate() {
     return this->value;
 }
 
+Number::Number(const string &values) {
+    this->value = stod(values);
+}
+
 double Plus::calculate() {
     return this->left->calculate() + this->Right->calculate();
 }
@@ -54,9 +58,6 @@ char Expression::getOperator() {
     return this->operatorType;
 }
 
-Expression::~Expression() {
-//todo
-}
 
 openPar::openPar() {
     this->operatorType = '(';
@@ -74,5 +75,9 @@ ClosePar::ClosePar() {
 double BoolExpression::calculate() {
     double r = this->Right->calculate();
     double l = this->left->calculate();
+
+}
+
+BoolExpression::BoolExpression(Expression *l, Expression *r) : BinaryExpression(l, r) {
 
 }

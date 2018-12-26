@@ -46,7 +46,7 @@ public:
     ReadData();
 
     ~ReadData();
-    void lexer1(string file);
+
     void lexer(string file);
 
     void parser();

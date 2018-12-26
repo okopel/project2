@@ -8,8 +8,8 @@
 #ifndef PROJECT_CLIENT_H
 #define PROJECT_CLIENT_H
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <netdb.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -28,7 +28,7 @@ mutex clientLocker;
  * @param portNumber
  * @param ipPath
  */
-void ConnectClient(int portNumber, string ipPath) {
+void ConnectClient(const int portNumber, const string ipPath) {
     cout << "client started" << endl;
     int n, sockfd;
     struct sockaddr_in serv_addr;
@@ -98,7 +98,6 @@ void sendToClient(const string address, double val) {
         clientLocker.lock();
         msgToServer += "set " + address + " " + to_string(val) + "\r\n";
         clientLocker.unlock();
-        //ConnectClient(5402, "127.0.0.1");//todo
     } catch (...) { throw "connection failed"; }
 
 }

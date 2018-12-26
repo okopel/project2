@@ -9,7 +9,7 @@
 #define PROJECT_SERVERSOCK_H
 
 #include <mutex>
-#include <stdio.h>
+#include <cstdio>
 #include <stdlib.h>
 #include <netdb.h>
 #include <unistd.h>
@@ -26,8 +26,7 @@
 
 class ServerSock : public OpenServerCommand {
 public:
-    void static
-    openServer(int portNumber, int myHz, DoubleMap &pathMapServer, map<string, double> *valMapServer) {
+    void static openServer(int portNumber, int myHz, DoubleMap &pathMapServer, map<string, double> *valMapServer) {
         cout << "try to connect.." << endl;
         int sockfd, newsockfd, clilen, n;
         char buffer[256];

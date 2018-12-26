@@ -6,10 +6,7 @@
  ******************************/
 
 #include "ReadData.h"
-#include "Command.h"
 #include <iterator>
-#include <map>
-#include <vector>
 #include "OpenServerCommand.h"
 
 /**
@@ -163,7 +160,7 @@ void ReadData::parser() {
             if (tmp.size() == 1 && tmp[0] == "}") {
                 dad = dad->getDad();
                 continue;
-            } else if (tmp.size() == 0) {
+            } else if (tmp.empty()) {
                 continue;
             }
         }
@@ -200,7 +197,7 @@ void ReadData::parser() {
             c->setDad(dad);
             dad = (ConditionParser *) c;
         }
-        if (tmp.size() > 0) {
+        if (!tmp.empty()) {
             string check = tmp[tmp.size() - 1];
             if (check == "}" || check[check.size() - 1] == '}') {
                 dad = dad->getDad();
@@ -214,7 +211,6 @@ void ReadData::parser() {
     for (Command *tmp:commandList) {
         tmp->join();
     }
-
 
 
 }//end of parser
@@ -235,7 +231,10 @@ ReadData::getVector() const {
 }
 
 bool ReadData::isVarInMap(string s) {
-    return true;//todo checking before assigment
+    if (this->serverMap->count(s) == 0) {
+        return false;
+    }
+    return true;
 }
 
 

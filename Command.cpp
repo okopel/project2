@@ -17,7 +17,7 @@ using namespace std;
 void ConnectCommand::execute() {
     try {
         this->ip = this->parameters[0];
-        string tmp = "";
+        string tmp;
         for (int i = 1; i < this->parameters.size(); i++) {
             tmp += this->parameters[i];
         }
@@ -59,10 +59,10 @@ void DefineVarCommand::execute() {
             // update path map
             //this->pathMap->insert(pair<string, string>(var, path));
             path = path.substr(1, path.size() - 2);
-            this->pathMap->addArg(var, path); // todo if there are 2 arg
+            this->pathMap->addArg(var, path);
             // not bind
         } else {
-            string tmp = "";
+            string tmp;
             for (int i = 2; i < this->parameters.size(); i++) {
                 tmp += this->parameters[i];
             }
@@ -228,7 +228,7 @@ IfCommand::IfCommand(DoubleMap *mapPath, map<string, double> *server) : Conditio
 void AssingmentCommand::execute() {
     try {
         string varName = this->parameters[0];
-        string tmp = "";
+        string tmp;
         for (int i = 2; i < this->parameters.size(); i++) {
             tmp += this->parameters[i];
         }
@@ -311,9 +311,8 @@ bool Command::isOperator(string s) {
 }
 
 Command::~Command() {
-    if (comThread != nullptr) {
-        delete comThread;
-    }
+    delete comThread;
+
 }
 
 void Command::join() {
@@ -326,10 +325,10 @@ void Command::join() {
  * print in monitor
  */
 void PrintCommand::execute() {
-    string buffer = "";
+    string buffer;
 
     try {
-        for (auto tmp:this->parameters) {
+        for (const auto &tmp:this->parameters) {
             buffer += tmp;
         }
         // if string - print it
@@ -353,7 +352,7 @@ PrintCommand::PrintCommand(DoubleMap *mapPath, map<string, double> *server) : Co
  */
 void SleepCommand::execute() {
     try {
-        string buffer = "";
+        string buffer;
         for (auto tmp:this->parameters) {
             buffer += tmp;
         }

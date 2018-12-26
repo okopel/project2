@@ -19,7 +19,7 @@ class ComExp : public Expression {
 protected:
     Command *c;
 public:
-    ComExp(Command *c);
+    explicit ComExp(Command *c);
     virtual double calculate() = 0;
 };
 

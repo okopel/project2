@@ -159,6 +159,8 @@ Expression *ShuntingYard::calExp(char op, Expression *e1, Expression *e2) {
             return new Mul(e1, e2);
         case '/':
             return new Div(e1, e2);
+        default:
+            return nullptr;
 
     }
 

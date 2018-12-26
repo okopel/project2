@@ -11,7 +11,7 @@
 
 #include "Command.h"
 #include "ShuntingYard.h"
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 
 /**

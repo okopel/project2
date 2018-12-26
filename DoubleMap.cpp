@@ -21,9 +21,7 @@ string DoubleMap::getVar(string path) {
     return "";
 }
 
-DoubleMap::DoubleMap() {
-
-}
+DoubleMap::DoubleMap() = default;
 
 void DoubleMap::setArg(string var, string path) {
     if (this->pathToVar.count(path) > 0) {

@@ -31,10 +31,6 @@ public:
      */
     char getOperator();
 
-    /**
-     * DTOR
-     */
-    virtual ~Expression();
 };
 
 /**
@@ -44,12 +40,9 @@ class Number : public Expression {
 protected:
     double value;
 public:
-    Number(double value) : value(value) {}
+    explicit Number(double value) : value(value) {}
 
-    Number(string values) {
-
-        this->value = stod(values);
-    }
+    explicit Number(const string &values);
 
     double calculate() override;
 
@@ -151,6 +144,7 @@ public:
  * Bollean expression
  */
 class BoolExpression : public BinaryExpression {
+
 public:
     BoolExpression(Expression *l, Expression *r);
 
