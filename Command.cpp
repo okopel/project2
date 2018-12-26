@@ -311,8 +311,7 @@ bool Command::isOperator(string s) {
 }
 
 Command::~Command() {
-    delete comThread;
-
+    delete this->comThread;
 }
 
 void Command::join() {
@@ -353,7 +352,7 @@ PrintCommand::PrintCommand(DoubleMap *mapPath, map<string, double> *server) : Co
 void SleepCommand::execute() {
     try {
         string buffer;
-        for (auto tmp:this->parameters) {
+        for (const auto &tmp:this->parameters) {
             buffer += tmp;
         }
         ShuntingYard sy(buffer, this);

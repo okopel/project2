@@ -114,25 +114,28 @@ double ShuntingYard::calculate() {
             nums.push(new Number(queue.front()));
         } else if (isOperator(queue.front()[0])) {
             Expression *e1 = new Number(0);
-            if (nums.size() > 0) {
+            if (!nums.empty()) {
                 delete e1;
                 e1 = nums.top();
                 nums.pop();
             }
             Expression *e2 = new Number(0);
-            if (nums.size() > 0) {
+            if (!nums.empty()) {
                 delete e2;
                 e2 = nums.top();
                 nums.pop();
             }
             nums.push(this->calExp(queue.front()[0], e2, e1));
+            delete e1;
+            delete e2;
+
         }
         queue.pop();
     }
     Expression *result = nums.top();
     double res = result->calculate();
     while (!nums.empty()) {
-        auto e = nums.top();
+        Expression *e = nums.top();
         nums.pop();
         delete e;
     }

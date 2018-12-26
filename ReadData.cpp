@@ -222,6 +222,7 @@ ReadData::~ReadData() {
     for (auto &c : this->commandMap) {
         delete c.second;
     }
+
 }
 
 const std::vector<vector<string>> &

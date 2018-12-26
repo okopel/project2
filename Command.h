@@ -57,7 +57,7 @@ protected:
     int getIndexOfDelimiter();
 
 public:
-    virtual ~Command();
+    ~Command();
 
     void join();
 

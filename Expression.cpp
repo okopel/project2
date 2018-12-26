@@ -18,19 +18,19 @@ double Plus::calculate() {
     return this->left->calculate() + this->Right->calculate();
 }
 
-Plus::Plus(Expression* l, Expression* r) : BinaryExpression(l, r) {
+Plus::Plus(Expression *l, Expression *r) : BinaryExpression(l, r) {
     this->operatorType = '+';
 }
 
-Minus::Minus(Expression* l, Expression* r) : BinaryExpression(l, r) {
+Minus::Minus(Expression *l, Expression *r) : BinaryExpression(l, r) {
     this->operatorType = '-';
 }
 
-Mul::Mul(Expression* l, Expression* r) : BinaryExpression(l, r) {
+Mul::Mul(Expression *l, Expression *r) : BinaryExpression(l, r) {
     this->operatorType = '*';
 }
 
-Div::Div(Expression* l, Expression* r) : BinaryExpression(l, r) {
+Div::Div(Expression *l, Expression *r) : BinaryExpression(l, r) {
     this->operatorType = '/';
 }
 
