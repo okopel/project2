@@ -21,19 +21,7 @@
 
 string msgToServer;
 mutex clientLocker;
-/**
- * send message to simulator
- * @param address - path of var to set
- * @param val - new value
- */
-void sendToClient(const string address, double val) {
-    try {
-        clientLocker.lock();
-        msgToServer += "set " + address + " " + to_string(val) + "\r\n";
-        clientLocker.unlock();
-    } catch (...) {throw "connection failed";}
 
-}
 
 /**
  * Connect to client.
@@ -69,27 +57,52 @@ void ConnectClient(int portNumber, string ipPath) {
 
     /* Now connect to the server */
     if (connect(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
-        perror("ERROR connecting");
-        exit(1);
+        cout << "ERROR connecting" << endl;
     }
     /* Send message to the server */
     while (true) {
         // this_thread::sleep_for(0.1s);
-        if (!msgToServer.empty()) {
-            clientLocker.lock();
-            const char *c = msgToServer.c_str();
-            clientLocker.unlock();
-            n = send(sockfd, c, strlen(buffer), MSG_EOR);//todo MSG_OOB?
-
-            clientLocker.lock();
-            msgToServer = "";
-            clientLocker.unlock();
+        if (msgToServer.empty()) {
+            continue;
         }
+        clientLocker.lock();
+        const char *c = msgToServer.c_str();
+        clientLocker.unlock();
+        n = send(sockfd, c, strlen(c), MSG_EOR);
+        cout << "n:" << n << "c:" << c << endl;
+        clientLocker.lock();
+//            cout << "MSG:" << msgToServer << endl;
+        msgToServer = "";
+        clientLocker.unlock();
+
         if (n < 0) {
-            perror("ERROR writing to socket");
-            exit(1);
+            cout << "ERROR writing to socket" << endl;
+            //  exit(1);
+        }
+        /* Now read server response */
+        bzero(buffer, 256);
+        n = read(sockfd, buffer, 255);
+        if (n < 0) {
+            cout << "ERROR reading from socket" << endl;
         }
     }
+
+}
+
+
+/**
+ * send message to simulator
+ * @param address - path of var to set
+ * @param val - new value
+ */
+void sendToClient(const string address, double val) {
+    try {
+        clientLocker.lock();
+        msgToServer += "set " + address + " " + to_string(val) + "\r\n";
+        //msgToServer += "set " + address + " " + "1" + "\r\n";
+        clientLocker.unlock();
+        //ConnectClient(5402, "127.0.0.1");//todo
+    } catch (...) { throw "connection failed"; }
 
 }
 

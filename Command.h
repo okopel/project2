@@ -13,8 +13,9 @@
 #include <thread>
 #include "Expression.h"
 #include "DoubleMap.h"
-
+#include "Global.h"
 using namespace std;
+
 
 class ConditionParser;
 
@@ -102,6 +103,8 @@ public:
  * command: connect as client to simulator
  */
 class ConnectCommand : public Command {
+    string ip;
+    int port;
 public:
     ConnectCommand(DoubleMap *mapPath, map<string, double> *serverMap);
 

@@ -16,15 +16,19 @@ using namespace std;
  */
 void ConnectCommand::execute() {
     try {
-        string ip = this->parameters[0];
+        this->ip = this->parameters[0];
         string tmp = "";
         for (int i = 1; i < this->parameters.size(); i++) {
             tmp += this->parameters[i];
         }
         // calc port
         ShuntingYard s(tmp, this);
-        int port = (int) s.calculate();
+        this->port = (int) s.calculate();
+//        IP=this->ip;
+//        PORT=this->port;
+
         this->comThread = new thread(ConnectClient, port, ip);
+//        ConnectClient(port, ip);
 
     } catch (...) {
         throw "Error in connectToClient";
@@ -39,34 +43,34 @@ ConnectCommand::ConnectCommand(DoubleMap *mapPath, map<string, double> *serverMa
  */
 void DefineVarCommand::execute() {
     try {
-    string var = this->parameters[0];
-    string path;
-    // update map
-    this->valMap->insert(pair<string, double>(var, 0));
-    // ignore "=" "bind"
-    if (this->parameters[2] == "bind") {
-        path = this->parameters[3];
-        //get var name (no path)
-        if (path[0] != '"') {
-            //get the path of the other var
-            path = this->pathMap->getPath(path);
+        string var = this->parameters[0];
+        string path;
+        // update map
+        this->valMap->insert(pair<string, double>(var, 0));
+        // ignore "=" "bind"
+        if (this->parameters[2] == "bind") {
+            path = this->parameters[3];
+            //get var name (no path)
+            if (path[0] != '"') {
+                //get the path of the other var
+                path = this->pathMap->getPath(path);
 //            path = this->pathMap->at(path);
+            }
+            // update path map
+            //this->pathMap->insert(pair<string, string>(var, path));
+            path = path.substr(1, path.size() - 2);
+            this->pathMap->addArg(var, path); // todo if there are 2 arg
+            // not bind
+        } else {
+            string tmp = "";
+            for (int i = 2; i < this->parameters.size(); i++) {
+                tmp += this->parameters[i];
+            }
+            // calc initial value
+            ShuntingYard s(tmp, this);
+            this->valMap->at(var) = s.calculate();
         }
-        // update path map
-        //this->pathMap->insert(pair<string, string>(var, path));
-        path = path.substr(1, path.size() - 2);
-        this->pathMap->addArg(var, path); // todo if there are 2 arg
-        // not bind
-    } else {
-        string tmp = "";
-        for (int i = 2; i < this->parameters.size(); i++) {
-            tmp += this->parameters[i];
-        }
-        // calc initial value
-        ShuntingYard s(tmp, this);
-        this->valMap->at(var) = s.calculate();
-    }
-    } catch (...) {throw "syntax error";}
+    } catch (...) { throw "syntax error"; }
 }
 
 /**
@@ -223,18 +227,20 @@ IfCommand::IfCommand(DoubleMap *mapPath, map<string, double> *server) : Conditio
  */
 void AssingmentCommand::execute() {
     try {
-    string varName = this->parameters[0];
-    string tmp = "";
-    for (int i = 2; i < this->parameters.size(); i++) {
-        tmp += this->parameters[i];
-    }
-    ShuntingYard s(tmp, this);
-    // calc var value
-    double val = s.calculate();
-    this->valMap->at(varName) = val;
-    // update simulator
-    sendToClient(varName, val);
-    } catch (...) {throw "assignment failed";}
+        string varName = this->parameters[0];
+        string tmp = "";
+        for (int i = 2; i < this->parameters.size(); i++) {
+            tmp += this->parameters[i];
+        }
+        ShuntingYard s(tmp, this);
+        // calc var value
+        double val = s.calculate();
+        this->valMap->at(varName) = val;
+        // update simulator
+        string path = this->pathMap->getPath(varName);
+
+        sendToClient(path, val);
+    } catch (...) { throw "assignment failed"; }
 }
 
 /**
@@ -337,7 +343,7 @@ void PrintCommand::execute() {
         ShuntingYard sy(buffer, this);
         //print the value of the var
         cout << sy.calculate() << endl;
-    } catch (...) {throw "print failed";}
+    } catch (...) { throw "print failed"; }
 }
 
 PrintCommand::PrintCommand(DoubleMap *mapPath, map<string, double> *server) : Command(mapPath, server) {}
@@ -347,15 +353,15 @@ PrintCommand::PrintCommand(DoubleMap *mapPath, map<string, double> *server) : Co
  */
 void SleepCommand::execute() {
     try {
-    string buffer = "";
-    for (auto tmp:this->parameters) {
-        buffer += tmp;
-    }
-    ShuntingYard sy(buffer, this);
-    // calc num of seconds
-    double val = sy.calculate();
-    usleep(val);
-    } catch (...) {throw "sleep failed";}
+        string buffer = "";
+        for (auto tmp:this->parameters) {
+            buffer += tmp;
+        }
+        ShuntingYard sy(buffer, this);
+        // calc num of seconds
+        double val = sy.calculate();
+        usleep(val);
+    } catch (...) { throw "sleep failed"; }
 }
 
 SleepCommand::SleepCommand(DoubleMap *mapPath, map<string, double> *server) : Command(mapPath, server) {}

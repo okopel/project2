@@ -88,13 +88,15 @@ public:
                                  "/controls/flight/elevator",
                                  "/controls/flight/rudder",
                                  "/controls/flight/flaps",
-                                 "/controls/engines/current-engine/throttle"
+                                 "/controls/engines/current-engine/throttle",
+                                 "/engines/engine/rpm"
         };
         string nextBuf;
         bool flash = false;
         /* If connection is established then start communicating */
         while (true) {
-            this_thread::sleep_for(0.1s);
+            // this_thread::sleep_for(0.1s);
+            sleep(1 / myHz);
             bzero(buffer, 256);
             n = read(newsockfd, buffer, 255);
             //n = recv(newsockfd, buffer, 255, MSG_PEEK);
