@@ -14,7 +14,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <netinet/in.h>
-#include <string.h>
 #include <string>
 #include <mutex>
 #include "Global.h"
@@ -45,7 +44,7 @@ void ConnectClient(const int portNumber, const string ipPath) {
 
     server = gethostbyname(ipPath.c_str());
 
-    if (server == NULL) {
+    if (server == nullptr) {
         fprintf(stderr, "ERROR, no such host\n");
         exit(0);
     }
@@ -61,7 +60,6 @@ void ConnectClient(const int portNumber, const string ipPath) {
     }
     /* Send message to the server */
     while (true) {
-        // this_thread::sleep_for(0.1s);
         if (msgToServer.empty()) {
             usleep(10);
             continue;

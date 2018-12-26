@@ -127,8 +127,8 @@ double ShuntingYard::calculate() {
                 nums.pop();
             }
             nums.push(this->calExp(queue.front()[0], e2, e1));
-            delete e1;
-            delete e2;
+//            delete e1;
+//            delete e2;
 
         }
         queue.pop();
