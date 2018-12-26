@@ -52,7 +52,7 @@ vector<string> ReadData::arrangeVector(string line) {
     vector<string> vector;
     string buffer;
     bool isPath = false;
-    for (int i = 0; i < line.size(); i++) {
+    for (unsigned int i = 0; i < line.size(); i++) {
         if (line[i] == '"') {
             if (!buffer.empty() && !isPath) {
                 vector.push_back(buffer);
@@ -86,7 +86,7 @@ vector<string> ReadData::arrangeVector(string line) {
                 vector.push_back(buffer);
                 buffer = "";
             }
-            int i2 = i + 1;
+            unsigned int i2 = i + 1;
             while ((i2 < line.size()) && line[i2] == ' ') {
                 i2++;
             }
@@ -111,7 +111,7 @@ vector<string> ReadData::arrangeVector(string line) {
     }
 
     //arange ++ or -- or +- or -+ case
-    for (int i = 0; i < vector.size() - 1; i++) {
+    for (unsigned int i = 0; i < vector.size() - 1; i++) {
         if ((vector[i] == "-" && vector[i + 1] == "-") || ((vector[i] == "+") && vector[i + 1] == "+")) {
             vector[i] = "+";
             vector.erase(vector.begin() + i + 1);
@@ -214,16 +214,6 @@ void ReadData::parser() {
 
 
 }//end of parser
-
-/**
- * DTOR
- */
-ReadData::~ReadData() {
-    for (auto &c : this->commandMap) {
-        delete c.second;
-    }
-
-}
 
 const std::vector<vector<string>> &
 

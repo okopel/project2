@@ -58,6 +58,8 @@ char Expression::getOperator() {
     return this->operatorType;
 }
 
+Expression::~Expression() = default;
+
 
 openPar::openPar() {
     this->operatorType = '(';
@@ -65,20 +67,6 @@ openPar::openPar() {
 
 ClosePar::ClosePar() {
     this->operatorType = ')';
-
-}
-
-/**
- * calc rigt & left expressions
- * @return
- */
-double BoolExpression::calculate() {
-    double r = this->Right->calculate();
-    double l = this->left->calculate();
-
-}
-
-BoolExpression::BoolExpression(Expression *l, Expression *r) : BinaryExpression(l, r) {
 
 }
 

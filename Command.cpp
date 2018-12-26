@@ -18,7 +18,7 @@ void ConnectCommand::execute() {
     try {
         this->ip = this->parameters[0];
         string tmp;
-        for (int i = 1; i < this->parameters.size(); i++) {
+        for (unsigned int i = 1; i < this->parameters.size(); i++) {
             tmp += this->parameters[i];
         }
         // calc port
@@ -63,7 +63,7 @@ void DefineVarCommand::execute() {
             // not bind
         } else {
             string tmp;
-            for (int i = 2; i < this->parameters.size(); i++) {
+            for ( unsigned int i = 2; i < this->parameters.size(); i++) {
                 tmp += this->parameters[i];
             }
             // calc initial value
@@ -148,7 +148,7 @@ bool ConditionParser::checkCondition() {
  * @return index
  */
 int ConditionParser::getIndexOfOper(vector<string> s) {
-    for (int i = 0; i < s.size(); i++) {
+    for (unsigned int i = 0; i < s.size(); i++) {
         if (s[i] == "==" || s[i] == ">=" || s[i] == "<=" || s[i] == "!=" || s[i] == "<" || s[i] == ">") {
             return i;
         }
@@ -229,7 +229,7 @@ void AssingmentCommand::execute() {
     try {
         string varName = this->parameters[0];
         string tmp;
-        for (int i = 2; i < this->parameters.size(); i++) {
+        for (unsigned int i = 2; i < this->parameters.size(); i++) {
             tmp += this->parameters[i];
         }
         ShuntingYard s(tmp, this);
@@ -281,7 +281,7 @@ ConditionParser *Command::getDad() {
 }
 
 int Command::getIndexOfDelimiter() {
-    for (int i = 0; i < this->parameters.size(); i++) {
+    for (unsigned int i = 0; i < this->parameters.size(); i++) {
         if (this->parameters[i] == ",") {
             return i;
         }
@@ -294,7 +294,7 @@ int Command::getIndexOfDelimiter() {
         }
     }
     // delimiter error case
-    return -1;
+    throw "there is not delimiter";
 }
 
 /**

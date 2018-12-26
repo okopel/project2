@@ -15,14 +15,11 @@ using namespace std;
  */
 void OpenServerCommand::execute() {
     try {
-        int index = this->getIndexOfDelimiter();
-        if (index == -1) {
-            throw "just one arg!";
-        }
+        unsigned int index = this->getIndexOfDelimiter();
         // calc port & Hz
         string ex1;
         string ex2;
-        for (int i = 0; i < this->parameters.size(); i++) {
+        for (unsigned int i = 0; i < this->parameters.size(); i++) {
             if (i < index) {
                 ex1 += this->parameters[i];
             } else {

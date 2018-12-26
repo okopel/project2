@@ -33,7 +33,6 @@ private:
     void initServerMap();
 
     vector<vector<string>> vec;
-    map<string, Command *> commandMap;
     DoubleMap *pathVarMap;
     map<string, double> *serverMap;
 
@@ -44,8 +43,6 @@ public:
     void setVec(const vector<vector<string>> &vec);
 
     ReadData();
-
-    ~ReadData();
 
     void lexer(string file);
 

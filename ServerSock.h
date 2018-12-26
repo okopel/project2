@@ -94,11 +94,14 @@ public:
         bool flash = false;
         /* If connection is established then start communicating */
         while (true) {
-            // this_thread::sleep_for(0.1s);
+
             sleep(1 / myHz);
             bzero(buffer, 256);
             n = read(newsockfd, buffer, 255);
-            //n = recv(newsockfd, buffer, 255, MSG_PEEK);
+
+            if (n < 0) {
+                cout << "Server Error" << endl;
+            }
             string conectedBuffer = nextBuf + buffer;
             nextBuf = "";
             std::string segment;
@@ -123,7 +126,7 @@ public:
             if (!segment.empty()) {
                 seglist.push_back(segment);
             }
-            for (int i = 0; i < min(pathes.size(), seglist.size()); i++) {
+            for (unsigned int i = 0; i < min(pathes.size(), seglist.size()); i++) {
                 string var = pathMapServer.getVar(pathes[i]);
                 if (var == "") {
                     continue;

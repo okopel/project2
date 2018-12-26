@@ -207,7 +207,7 @@ string ShuntingYard::arrangeString(string s) {
         s = "0";
     }
     s += res;
-    for (int i = 0; i < s.length() - 1; i++) {
+    for (unsigned int i = 0; i < s.length() - 1; i++) {
         if ((s[i] == '-' && s[i + 1] == '-') || ((s[i] == '+' && s[i + 1] == '+'))) {
             s[i] = '+';
             s[i + 1] = ' ';

@@ -31,6 +31,7 @@ public:
      */
     char getOperator();
 
+    virtual ~Expression();
 };
 
 /**
@@ -92,7 +93,7 @@ protected:
 public:
     double calculate() = 0;
 
-    ~BinaryExpression();
+    virtual ~BinaryExpression();
 
     BinaryExpression(Expression *left, Expression *Right) : left(left), Right(Right) {};
 };
@@ -133,17 +134,6 @@ public:
 class Div : public BinaryExpression {
 public:
     Div(Expression *l, Expression *r);
-
-    double calculate() override;
-};
-
-/**
- * Bollean expression
- */
-class BoolExpression : public BinaryExpression {
-
-public:
-    BoolExpression(Expression *l, Expression *r);
 
     double calculate() override;
 };
