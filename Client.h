@@ -63,21 +63,20 @@ void ConnectClient(int portNumber, string ipPath) {
     while (true) {
         // this_thread::sleep_for(0.1s);
         if (msgToServer.empty()) {
+            usleep(10);
             continue;
         }
         clientLocker.lock();
         const char *c = msgToServer.c_str();
         clientLocker.unlock();
         n = send(sockfd, c, strlen(c), MSG_EOR);
-        cout << "n:" << n << "c:" << c << endl;
         clientLocker.lock();
-//            cout << "MSG:" << msgToServer << endl;
         msgToServer = "";
         clientLocker.unlock();
 
         if (n < 0) {
             cout << "ERROR writing to socket" << endl;
-            //  exit(1);
+            exit(1);
         }
         /* Now read server response */
         bzero(buffer, 256);
@@ -86,7 +85,6 @@ void ConnectClient(int portNumber, string ipPath) {
             cout << "ERROR reading from socket" << endl;
         }
     }
-
 }
 
 
@@ -99,7 +97,6 @@ void sendToClient(const string address, double val) {
     try {
         clientLocker.lock();
         msgToServer += "set " + address + " " + to_string(val) + "\r\n";
-        //msgToServer += "set " + address + " " + "1" + "\r\n";
         clientLocker.unlock();
         //ConnectClient(5402, "127.0.0.1");//todo
     } catch (...) { throw "connection failed"; }
