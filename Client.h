@@ -12,6 +12,7 @@
 #include <cstdlib>
 #include <netdb.h>
 #include <sys/socket.h>
+#include <string.h>
 #include <unistd.h>
 #include <netinet/in.h>
 #include <string>
